@@ -35,6 +35,11 @@ namespace GameDemo.Network
         [SerializeField] private Color healthBarBackgroundColor = new Color(0f, 0f, 0f, 0.7f);
         [SerializeField] private Color healthBarFillColor = new Color(0.2f, 0.9f, 0.2f, 0.95f);
 
+        [Header("Hit Flash")]
+        [SerializeField] private bool enableHitFlash = true;
+        [SerializeField] private float hitFlashDuration = 0.5f;
+        [SerializeField] private Color hitFlashColor = new Color(1f, 0.3f, 0.3f, 1f);
+
         private EntityNetworkSync _networkSync;
         private SkeletonAnimation _skeletonAnim;
         private Vector3 _remoteTargetPosition;
@@ -55,6 +60,12 @@ namespace GameDemo.Network
         private float _attackInputUnlockTime;
         private bool _showRespawnPopup;
         private bool _respawnRequested;
+        private Coroutine _hitFlashCoroutine;
+        private bool _hasBaseSkeletonColor;
+        private float _baseSkeletonR = 1f;
+        private float _baseSkeletonG = 1f;
+        private float _baseSkeletonB = 1f;
+        private float _baseSkeletonA = 1f;
 
         private void Awake()
         {
@@ -75,8 +86,20 @@ namespace GameDemo.Network
                 }
             }
 
+            CacheBaseSkeletonColor();
             EnsureHealthBarVisual();
             UpdateHealthBarVisual();
+        }
+
+        private void OnDisable()
+        {
+            if (_hitFlashCoroutine != null)
+            {
+                StopCoroutine(_hitFlashCoroutine);
+                _hitFlashCoroutine = null;
+            }
+
+            RestoreSkeletonTint();
         }
 
         private void Update()
@@ -224,6 +247,11 @@ namespace GameDemo.Network
             var isDeadNow = currentHp <= 0.01f;
             EnsureHealthBarVisual();
             UpdateHealthBarVisual();
+
+            if (currentHp < previousHp - 0.001f)
+            {
+                TriggerHitFlash();
+            }
 
             if (isLocalPlayer)
             {
@@ -380,6 +408,79 @@ namespace GameDemo.Network
             }
 
             return string.Empty;
+        }
+
+        private void TriggerHitFlash()
+        {
+            if (!enableHitFlash)
+            {
+                return;
+            }
+
+            CacheBaseSkeletonColor();
+            if (!_hasBaseSkeletonColor)
+            {
+                return;
+            }
+
+            if (_hitFlashCoroutine != null)
+            {
+                StopCoroutine(_hitFlashCoroutine);
+                _hitFlashCoroutine = null;
+            }
+
+            _hitFlashCoroutine = StartCoroutine(HitFlashCoroutine());
+        }
+
+        private IEnumerator HitFlashCoroutine()
+        {
+            ApplySkeletonTint(hitFlashColor);
+            yield return new WaitForSeconds(Mathf.Max(0.01f, hitFlashDuration));
+            RestoreSkeletonTint();
+            _hitFlashCoroutine = null;
+        }
+
+        private void CacheBaseSkeletonColor()
+        {
+            if (_hasBaseSkeletonColor || _skeletonAnim?.Skeleton == null)
+            {
+                return;
+            }
+
+            var skeleton = _skeletonAnim.Skeleton;
+            _baseSkeletonR = skeleton.R;
+            _baseSkeletonG = skeleton.G;
+            _baseSkeletonB = skeleton.B;
+            _baseSkeletonA = skeleton.A;
+            _hasBaseSkeletonColor = true;
+        }
+
+        private void ApplySkeletonTint(Color color)
+        {
+            if (_skeletonAnim?.Skeleton == null)
+            {
+                return;
+            }
+
+            var skeleton = _skeletonAnim.Skeleton;
+            skeleton.R = color.r;
+            skeleton.G = color.g;
+            skeleton.B = color.b;
+            skeleton.A = color.a;
+        }
+
+        private void RestoreSkeletonTint()
+        {
+            if (!_hasBaseSkeletonColor || _skeletonAnim?.Skeleton == null)
+            {
+                return;
+            }
+
+            var skeleton = _skeletonAnim.Skeleton;
+            skeleton.R = _baseSkeletonR;
+            skeleton.G = _baseSkeletonG;
+            skeleton.B = _baseSkeletonB;
+            skeleton.A = _baseSkeletonA;
         }
 
         private void HandleAttackAnimationComplete()

@@ -184,3 +184,6 @@ MonoBehaviour:
   healthBarSize: {x: 5, y: 0.5}
   healthBarBackgroundColor: {r: 0, g: 0, b: 0, a: 0.7}
   healthBarFillColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.95}
+  enableHitFlash: 1
+  hitFlashDuration: 0.2
+  hitFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
