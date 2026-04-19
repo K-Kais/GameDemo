@@ -1,0 +1,160 @@
+
+E_105.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Body
+  rotate: false
+  xy: 79, 122
+  size: 126, 132
+  orig: 126, 132
+  offset: 0, 0
+  index: -1
+Jacket_1
+  rotate: false
+  xy: 79, 31
+  size: 58, 89
+  orig: 58, 89
+  offset: 0, 0
+  index: -1
+Jacket_2
+  rotate: false
+  xy: 139, 50
+  size: 57, 70
+  orig: 59, 72
+  offset: 1, 1
+  index: -1
+L_eye
+  rotate: false
+  xy: 131, 5
+  size: 22, 24
+  orig: 24, 26
+  offset: 1, 1
+  index: -1
+L_eyebrow
+  rotate: true
+  xy: 207, 187
+  size: 28, 21
+  orig: 30, 23
+  offset: 1, 1
+  index: -1
+L_hand_1
+  rotate: false
+  xy: 155, 3
+  size: 22, 45
+  orig: 22, 45
+  offset: 0, 0
+  index: -1
+L_hand_2
+  rotate: false
+  xy: 222, 138
+  size: 18, 21
+  orig: 20, 23
+  offset: 1, 1
+  index: -1
+L_leg_1
+  rotate: true
+  xy: 207, 135
+  size: 24, 13
+  orig: 24, 14
+  offset: 0, 0
+  index: -1
+L_leg_2
+  rotate: false
+  xy: 230, 197
+  size: 7, 18
+  orig: 9, 20
+  offset: 1, 1
+  index: -1
+Mount
+  rotate: false
+  xy: 79, 2
+  size: 25, 27
+  orig: 27, 29
+  offset: 1, 1
+  index: -1
+Petiole_1
+  rotate: false
+  xy: 106, 4
+  size: 23, 25
+  orig: 25, 26
+  offset: 1, 1
+  index: -1
+Petiole_2
+  rotate: true
+  xy: 207, 217
+  size: 37, 29
+  orig: 38, 31
+  offset: 0, 1
+  index: -1
+Pieceofmelon
+  rotate: false
+  xy: 198, 54
+  size: 54, 66
+  orig: 56, 68
+  offset: 1, 1
+  index: -1
+R_eye
+  rotate: true
+  xy: 227, 122
+  size: 14, 19
+  orig: 16, 21
+  offset: 1, 1
+  index: -1
+R_eyebrow
+  rotate: false
+  xy: 242, 142
+  size: 20, 20
+  orig: 22, 22
+  offset: 1, 1
+  index: -1
+R_hand_1
+  rotate: true
+  xy: 179, 9
+  size: 39, 30
+  orig: 39, 30
+  offset: 0, 0
+  index: -1
+R_hand_2
+  rotate: false
+  xy: 223, 164
+  size: 18, 21
+  orig: 20, 23
+  offset: 1, 1
+  index: -1
+R_leg_1
+  rotate: true
+  xy: 207, 161
+  size: 24, 14
+  orig: 24, 14
+  offset: 0, 0
+  index: -1
+R_leg_2
+  rotate: true
+  xy: 207, 125
+  size: 8, 18
+  orig: 10, 20
+  offset: 1, 1
+  index: -1
+Shadow_mount
+  rotate: false
+  xy: 248, 122
+  size: 20, 18
+  orig: 22, 20
+  offset: 1, 1
+  index: -1
+leaf
+  rotate: false
+  xy: 211, 2
+  size: 64, 50
+  orig: 65, 52
+  offset: 0, 1
+  index: -1
+shadow
+  rotate: true
+  xy: 2, 10
+  size: 244, 75
+  orig: 244, 75
+  offset: 0, 0
+  index: -1

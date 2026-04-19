@@ -1,0 +1,139 @@
+
+B_002.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Belt
+  rotate: true
+  xy: 198, 128
+  size: 101, 35
+  orig: 103, 37
+  offset: 1, 1
+  index: -1
+Jacket_1
+  rotate: true
+  xy: 159, 3
+  size: 30, 60
+  orig: 30, 60
+  offset: 0, 0
+  index: -1
+Jacket_2
+  rotate: true
+  xy: 34, 30
+  size: 54, 63
+  orig: 54, 63
+  offset: 0, 0
+  index: -1
+L_eye
+  rotate: false
+  xy: 163, 35
+  size: 41, 32
+  orig: 41, 32
+  offset: 0, 0
+  index: -1
+L_hand_1
+  rotate: false
+  xy: 2, 180
+  size: 52, 49
+  orig: 54, 51
+  offset: 1, 1
+  index: -1
+L_hand_2
+  rotate: false
+  xy: 206, 35
+  size: 25, 37
+  orig: 27, 39
+  offset: 1, 1
+  index: -1
+L_leg_1
+  rotate: false
+  xy: 2, 160
+  size: 10, 18
+  orig: 12, 20
+  offset: 1, 1
+  index: -1
+L_leg_2
+  rotate: false
+  xy: 56, 185
+  size: 13, 18
+  orig: 14, 19
+  offset: 0, 1
+  index: -1
+Leaf 1
+  rotate: true
+  xy: 123, 70
+  size: 33, 100
+  orig: 34, 100
+  offset: 0, 0
+  index: -1
+Leaf 2
+  rotate: true
+  xy: 83, 38
+  size: 33, 78
+  orig: 34, 81
+  offset: 0, 0
+  index: -1
+Leaf 3
+  rotate: true
+  xy: 103, 18
+  size: 25, 57
+  orig: 26, 58
+  offset: 0, 1
+  index: -1
+Mouth
+  rotate: false
+  xy: 56, 218
+  size: 17, 11
+  orig: 19, 13
+  offset: 1, 1
+  index: -1
+R_eye
+  rotate: false
+  xy: 213, 96
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+R_hand_1
+  rotate: false
+  xy: 2, 79
+  size: 51, 49
+  orig: 53, 51
+  offset: 1, 1
+  index: -1
+R_hand_2
+  rotate: false
+  xy: 2, 31
+  size: 28, 46
+  orig: 30, 48
+  offset: 1, 1
+  index: -1
+R_leg_1
+  rotate: false
+  xy: 158, 213
+  size: 9, 16
+  orig: 11, 18
+  offset: 1, 1
+  index: -1
+R_leg_2
+  rotate: false
+  xy: 14, 161
+  size: 16, 19
+  orig: 17, 20
+  offset: 1, 1
+  index: -1
+head
+  rotate: true
+  xy: 2, 82
+  size: 147, 194
+  orig: 147, 195
+  offset: 0, 1
+  index: -1
+shadow
+  rotate: false
+  xy: 2, 231
+  size: 238, 69
+  orig: 244, 75
+  offset: 3, 3
+  index: -1

@@ -1,0 +1,132 @@
+
+E_205.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Body
+  rotate: false
+  xy: 167, 43
+  size: 100, 102
+  orig: 100, 102
+  offset: 0, 0
+  index: -1
+Hair
+  rotate: false
+  xy: 269, 8
+  size: 73, 81
+  orig: 73, 81
+  offset: 0, 0
+  index: -1
+L_Arm
+  rotate: false
+  xy: 372, 34
+  size: 20, 19
+  orig: 22, 21
+  offset: 1, 1
+  index: -1
+L_Eye
+  rotate: false
+  xy: 223, 10
+  size: 33, 31
+  orig: 33, 31
+  offset: 0, 0
+  index: -1
+L_Hand
+  rotate: false
+  xy: 344, 34
+  size: 26, 33
+  orig: 28, 35
+  offset: 1, 1
+  index: -1
+L_Jacket
+  rotate: false
+  xy: 269, 97
+  size: 46, 48
+  orig: 46, 48
+  offset: 0, 0
+  index: -1
+L_Ryebrown
+  rotate: false
+  xy: 284, 5
+  size: 15, 14
+  orig: 17, 16
+  offset: 1, 1
+  index: -1
+Mount
+  rotate: false
+  xy: 372, 55
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+R_Arm
+  rotate: false
+  xy: 370, 11
+  size: 20, 21
+  orig: 22, 23
+  offset: 1, 1
+  index: -1
+R_Hand
+  rotate: false
+  xy: 344, 11
+  size: 24, 21
+  orig: 26, 23
+  offset: 1, 1
+  index: -1
+R_Jacket
+  rotate: false
+  xy: 167, 5
+  size: 54, 36
+  orig: 54, 36
+  offset: 0, 0
+  index: -1
+R_Rye
+  rotate: false
+  xy: 258, 7
+  size: 24, 27
+  orig: 24, 27
+  offset: 0, 0
+  index: -1
+R_Ryebrown
+  rotate: false
+  xy: 358, 70
+  size: 12, 13
+  orig: 12, 13
+  offset: 0, 0
+  index: -1
+R_leg
+  rotate: false
+  xy: 383, 70
+  size: 14, 16
+  orig: 14, 17
+  offset: 0, 1
+  index: -1
+Thigh
+  rotate: false
+  xy: 375, 87
+  size: 6, 13
+  orig: 8, 15
+  offset: 1, 1
+  index: -1
+Weapon
+  rotate: false
+  xy: 2, 2
+  size: 163, 143
+  orig: 165, 145
+  offset: 1, 1
+  index: -1
+ball
+  rotate: false
+  xy: 2, 147
+  size: 325, 325
+  orig: 327, 327
+  offset: 1, 1
+  index: -1
+shadow
+  rotate: true
+  xy: 329, 234
+  size: 238, 69
+  orig: 244, 75
+  offset: 3, 3
+  index: -1

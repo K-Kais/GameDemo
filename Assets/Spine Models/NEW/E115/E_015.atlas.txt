@@ -1,0 +1,76 @@
+
+E_015.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+R_hand_1
+  rotate: false
+  xy: 451, 27
+  size: 23, 24
+  orig: 23, 24
+  offset: 0, 0
+  index: -1
+R_hand_2
+  rotate: false
+  xy: 2, 2
+  size: 18, 18
+  orig: 20, 20
+  offset: 1, 1
+  index: -1
+R_hand_3
+  rotate: false
+  xy: 38, 8
+  size: 12, 12
+  orig: 14, 14
+  offset: 1, 1
+  index: -1
+R_leg_1
+  rotate: false
+  xy: 22, 8
+  size: 14, 12
+  orig: 16, 14
+  offset: 1, 1
+  index: -1
+R_leg_2
+  rotate: false
+  xy: 52, 7
+  size: 7, 13
+  orig: 9, 15
+  offset: 1, 1
+  index: -1
+body
+  rotate: true
+  xy: 242, 23
+  size: 68, 78
+  orig: 68, 78
+  offset: 0, 0
+  index: -1
+head
+  rotate: true
+  xy: 398, 13
+  size: 38, 51
+  orig: 38, 51
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 2, 22
+  size: 238, 69
+  orig: 244, 75
+  offset: 3, 3
+  index: -1
+shieldv
+  rotate: true
+  xy: 322, 2
+  size: 49, 74
+  orig: 49, 74
+  offset: 0, 0
+  index: -1
+spear
+  rotate: true
+  xy: 322, 53
+  size: 38, 138
+  orig: 40, 140
+  offset: 1, 1
+  index: -1

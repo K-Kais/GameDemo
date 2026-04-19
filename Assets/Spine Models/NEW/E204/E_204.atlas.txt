@@ -1,0 +1,104 @@
+
+E_204.png
+size: 256,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+L_eye
+  rotate: false
+  xy: 217, 218
+  size: 21, 18
+  orig: 23, 20
+  offset: 1, 1
+  index: -1
+L_eyebrow
+  rotate: false
+  xy: 206, 6
+  size: 29, 22
+  orig: 31, 24
+  offset: 1, 1
+  index: -1
+L_hand_1
+  rotate: false
+  xy: 134, 15
+  size: 38, 36
+  orig: 40, 38
+  offset: 1, 1
+  index: -1
+L_hand_2
+  rotate: false
+  xy: 174, 21
+  size: 30, 43
+  orig: 32, 45
+  offset: 1, 1
+  index: -1
+L_leg_1
+  rotate: false
+  xy: 2, 378
+  size: 7, 17
+  orig: 9, 19
+  offset: 1, 1
+  index: -1
+L_leg_2
+  rotate: false
+  xy: 2, 413
+  size: 13, 18
+  orig: 13, 18
+  offset: 0, 0
+  index: -1
+R_eye
+  rotate: false
+  xy: 2, 397
+  size: 12, 14
+  orig: 14, 16
+  offset: 1, 1
+  index: -1
+R_eyebrow
+  rotate: false
+  xy: 217, 193
+  size: 22, 23
+  orig: 24, 25
+  offset: 1, 1
+  index: -1
+R_hand_1
+  rotate: false
+  xy: 206, 30
+  size: 33, 34
+  orig: 35, 36
+  offset: 1, 1
+  index: -1
+head
+  rotate: false
+  xy: 2, 235
+  size: 135, 196
+  orig: 135, 196
+  offset: 0, 0
+  index: -1
+jacket
+  rotate: false
+  xy: 2, 2
+  size: 130, 84
+  orig: 130, 84
+  offset: 0, 0
+  index: -1
+jacket2
+  rotate: true
+  xy: 146, 66
+  size: 125, 85
+  orig: 127, 87
+  offset: 1, 1
+  index: -1
+shadow
+  rotate: true
+  xy: 146, 193
+  size: 238, 69
+  orig: 244, 75
+  offset: 3, 3
+  index: -1
+weapon
+  rotate: true
+  xy: 2, 88
+  size: 145, 142
+  orig: 145, 142
+  offset: 0, 0
+  index: -1

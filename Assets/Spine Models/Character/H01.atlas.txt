@@ -1,0 +1,146 @@
+
+H01.png
+size: 204,204
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+B_hair
+  rotate: false
+  xy: 176, 104
+  size: 19, 27
+  orig: 19, 27
+  offset: 0, 0
+  index: -1
+Back_Hat
+  rotate: false
+  xy: 125, 123
+  size: 49, 26
+  orig: 49, 26
+  offset: 0, 0
+  index: -1
+Body
+  rotate: false
+  xy: 82, 113
+  size: 29, 27
+  orig: 29, 27
+  offset: 0, 0
+  index: -1
+Hat
+  rotate: false
+  xy: 2, 121
+  size: 78, 41
+  orig: 78, 41
+  offset: 0, 0
+  index: -1
+Hat_2
+  rotate: true
+  xy: 82, 142
+  size: 20, 41
+  orig: 20, 41
+  offset: 0, 0
+  index: -1
+Head
+  rotate: false
+  xy: 126, 151
+  size: 56, 51
+  orig: 56, 51
+  offset: 0, 0
+  index: -1
+L_ear
+  rotate: true
+  xy: 176, 133
+  size: 16, 26
+  orig: 16, 26
+  offset: 0, 0
+  index: -1
+L_hair
+  rotate: false
+  xy: 184, 170
+  size: 18, 32
+  orig: 18, 32
+  offset: 0, 0
+  index: -1
+L_hand_1
+  rotate: true
+  xy: 51, 108
+  size: 11, 13
+  orig: 11, 13
+  offset: 0, 0
+  index: -1
+L_hand_2
+  rotate: true
+  xy: 2, 100
+  size: 19, 27
+  orig: 19, 27
+  offset: 0, 0
+  index: -1
+L_leg
+  rotate: false
+  xy: 113, 122
+  size: 10, 18
+  orig: 10, 18
+  offset: 0, 0
+  index: -1
+R_Low_Arm
+  rotate: true
+  xy: 184, 151
+  size: 17, 18
+  orig: 17, 18
+  offset: 0, 0
+  index: -1
+R_hair
+  rotate: true
+  xy: 125, 108
+  size: 13, 29
+  orig: 13, 29
+  offset: 0, 0
+  index: -1
+R_hand_1
+  rotate: true
+  xy: 66, 108
+  size: 11, 12
+  orig: 11, 12
+  offset: 0, 0
+  index: -1
+R_hand_3
+  rotate: false
+  xy: 156, 105
+  size: 18, 16
+  orig: 18, 16
+  offset: 0, 0
+  index: -1
+R_leg
+  rotate: true
+  xy: 31, 111
+  size: 8, 18
+  orig: 9, 18
+  offset: 1, 0
+  index: -1
+deco3
+  rotate: true
+  xy: 31, 101
+  size: 8, 11
+  orig: 8, 11
+  offset: 0, 0
+  index: -1
+deco_1
+  rotate: false
+  xy: 113, 110
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+deco_2
+  rotate: false
+  xy: 197, 124
+  size: 5, 7
+  orig: 5, 7
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 2, 164
+  size: 122, 38
+  orig: 122, 38
+  offset: 0, 0
+  index: -1

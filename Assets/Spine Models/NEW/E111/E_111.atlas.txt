@@ -1,0 +1,97 @@
+
+E_111.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Body
+  rotate: false
+  xy: 109, 59
+  size: 59, 70
+  orig: 61, 72
+  offset: 1, 1
+  index: -1
+Eye
+  rotate: true
+  xy: 192, 61
+  size: 8, 10
+  orig: 10, 12
+  offset: 1, 1
+  index: -1
+Jelly
+  rotate: false
+  xy: 2, 24
+  size: 105, 105
+  orig: 105, 107
+  offset: 0, 0
+  index: -1
+Jelly_light
+  rotate: true
+  xy: 109, 2
+  size: 55, 64
+  orig: 55, 64
+  offset: 0, 0
+  index: -1
+L_hand_1
+  rotate: false
+  xy: 197, 44
+  size: 16, 15
+  orig: 18, 17
+  offset: 1, 1
+  index: -1
+L_hand_2
+  rotate: false
+  xy: 170, 60
+  size: 20, 9
+  orig: 22, 11
+  offset: 1, 1
+  index: -1
+L_hand_3
+  rotate: false
+  xy: 200, 76
+  size: 21, 20
+  orig: 23, 22
+  offset: 1, 1
+  index: -1
+Mount
+  rotate: true
+  xy: 170, 71
+  size: 25, 28
+  orig: 25, 28
+  offset: 0, 0
+  index: -1
+Petiole
+  rotate: true
+  xy: 170, 98
+  size: 31, 54
+  orig: 31, 54
+  offset: 0, 0
+  index: -1
+R_hand_1
+  rotate: false
+  xy: 204, 63
+  size: 21, 11
+  orig: 23, 13
+  offset: 1, 1
+  index: -1
+R_hand_2
+  rotate: false
+  xy: 175, 18
+  size: 24, 15
+  orig: 26, 17
+  offset: 1, 1
+  index: -1
+R_hand_3
+  rotate: false
+  xy: 175, 35
+  size: 20, 23
+  orig: 22, 25
+  offset: 1, 1
+  index: -1
+shadow
+  rotate: false
+  xy: 2, 131
+  size: 244, 75
+  orig: 244, 75
+  offset: 0, 0
+  index: -1

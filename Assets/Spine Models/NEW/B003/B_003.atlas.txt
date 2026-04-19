@@ -1,0 +1,97 @@
+
+B_003.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+L_eye
+  rotate: false
+  xy: 102, 498
+  size: 14, 12
+  orig: 16, 14
+  offset: 1, 1
+  index: -1
+L_hand_1
+  rotate: true
+  xy: 404, 272
+  size: 72, 82
+  orig: 72, 82
+  offset: 0, 0
+  index: -1
+L_hand_2
+  rotate: false
+  xy: 12, 474
+  size: 48, 36
+  orig: 48, 36
+  offset: 0, 0
+  index: -1
+R_eye
+  rotate: false
+  xy: 2, 499
+  size: 8, 11
+  orig: 10, 13
+  offset: 1, 1
+  index: -1
+R_hand_1
+  rotate: true
+  xy: 457, 379
+  size: 65, 53
+  orig: 65, 53
+  offset: 0, 0
+  index: -1
+R_hand_2
+  rotate: false
+  xy: 62, 492
+  size: 38, 18
+  orig: 38, 18
+  offset: 0, 0
+  index: -1
+body
+  rotate: 180
+  xy: 2, 285
+  size: 330, 225
+  orig: 330, 225
+  offset: 0, 0
+  index: -1
+horn_1
+  rotate: true
+  xy: 404, 413
+  size: 97, 85
+  orig: 97, 85
+  offset: 0, 0
+  index: -1
+horn_2
+  rotate: 180
+  xy: 2, 258
+  size: 63, 75
+  orig: 63, 75
+  offset: 0, 0
+  index: -1
+leaf
+  rotate: false
+  xy: 267, 256
+  size: 65, 69
+  orig: 66, 69
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: true
+  xy: 333, 272
+  size: 238, 69
+  orig: 244, 75
+  offset: 3, 3
+  index: -1
+wing_1
+  rotate: false
+  xy: 2, 257
+  size: 172, 123
+  orig: 172, 123
+  offset: 0, 0
+  index: -1
+wing_2
+  rotate: false
+  xy: 416, 317
+  size: 94, 96
+  orig: 94, 96
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,223 @@
+
+B_005.png
+size: 512,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Bandanas_1
+  rotate: true
+  xy: 417, 101
+  size: 143, 71
+  orig: 143, 71
+  offset: 0, 0
+  index: -1
+Body
+  rotate: true
+  xy: 2, 525
+  size: 133, 247
+  orig: 133, 247
+  offset: 0, 0
+  index: -1
+Corn_1
+  rotate: true
+  xy: 454, 320
+  size: 36, 49
+  orig: 38, 51
+  offset: 1, 1
+  index: -1
+Corn_2
+  rotate: false
+  xy: 195, 279
+  size: 45, 41
+  orig: 47, 43
+  offset: 1, 1
+  index: -1
+Corn_3
+  rotate: false
+  xy: 479, 786
+  size: 30, 41
+  orig: 32, 43
+  offset: 1, 1
+  index: -1
+Corn_4
+  rotate: false
+  xy: 454, 495
+  size: 51, 50
+  orig: 53, 52
+  offset: 1, 1
+  index: -1
+Corn_5
+  rotate: true
+  xy: 417, 315
+  size: 38, 34
+  orig: 40, 36
+  offset: 1, 1
+  index: -1
+Corn_6
+  rotate: false
+  xy: 197, 440
+  size: 47, 45
+  orig: 49, 47
+  offset: 1, 1
+  index: -1
+Corn_bomb
+  rotate: false
+  xy: 244, 242
+  size: 171, 111
+  orig: 171, 111
+  offset: 0, 0
+  index: -1
+Cornhusks_1
+  rotate: false
+  xy: 2, 340
+  size: 193, 183
+  orig: 193, 183
+  offset: 0, 0
+  index: -1
+Cornhusks_2
+  rotate: true
+  xy: 275, 636
+  size: 191, 202
+  orig: 191, 202
+  offset: 0, 0
+  index: -1
+Cornhusks_3
+  rotate: true
+  xy: 251, 355
+  size: 190, 201
+  orig: 190, 201
+  offset: 0, 0
+  index: -1
+Cornhusks_4
+  rotate: false
+  xy: 2, 162
+  size: 191, 176
+  orig: 191, 176
+  offset: 0, 0
+  index: -1
+Cornhusks_5
+  rotate: true
+  xy: 2, 782
+  size: 133, 271
+  orig: 133, 271
+  offset: 0, 0
+  index: -1
+Cornhusks_6
+  rotate: true
+  xy: 2, 660
+  size: 120, 270
+  orig: 120, 270
+  offset: 0, 0
+  index: -1
+Cornhusks_7
+  rotate: true
+  xy: 275, 829
+  size: 86, 222
+  orig: 86, 222
+  offset: 0, 0
+  index: -1
+Hair_corn
+  rotate: true
+  xy: 2, 2
+  size: 97, 58
+  orig: 97, 58
+  offset: 0, 0
+  index: -1
+Hat_@
+  rotate: true
+  xy: 454, 358
+  size: 135, 50
+  orig: 137, 52
+  offset: 1, 1
+  index: -1
+L_eye
+  rotate: true
+  xy: 479, 660
+  size: 14, 21
+  orig: 16, 23
+  offset: 1, 1
+  index: -1
+L_eye2
+  rotate: false
+  xy: 479, 676
+  size: 22, 19
+  orig: 22, 19
+  offset: 0, 0
+  index: -1
+L_hand_1
+  rotate: true
+  xy: 479, 744
+  size: 40, 30
+  orig: 40, 30
+  offset: 0, 0
+  index: -1
+L_hand_2
+  rotate: false
+  xy: 197, 405
+  size: 47, 33
+  orig: 47, 33
+  offset: 0, 0
+  index: -1
+Mouth_A
+  rotate: false
+  xy: 195, 218
+  size: 41, 59
+  orig: 43, 61
+  offset: 1, 1
+  index: -1
+Mouth_O
+  rotate: true
+  xy: 479, 697
+  size: 45, 28
+  orig: 47, 30
+  offset: 1, 1
+  index: -1
+Popcorn_1
+  rotate: false
+  xy: 417, 246
+  size: 81, 67
+  orig: 83, 69
+  offset: 1, 1
+  index: -1
+Popcorn_2
+  rotate: true
+  xy: 238, 135
+  size: 105, 160
+  orig: 107, 162
+  offset: 1, 1
+  index: -1
+R_eye
+  rotate: true
+  xy: 479, 624
+  size: 14, 19
+  orig: 16, 21
+  offset: 1, 1
+  index: -1
+R_eye2
+  rotate: false
+  xy: 479, 640
+  size: 19, 18
+  orig: 19, 18
+  offset: 0, 0
+  index: -1
+R_hand_1
+  rotate: false
+  xy: 197, 487
+  size: 48, 36
+  orig: 48, 36
+  offset: 0, 0
+  index: -1
+R_hand_2
+  rotate: false
+  xy: 197, 322
+  size: 45, 81
+  orig: 45, 81
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 251, 547
+  size: 244, 75
+  orig: 244, 75
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,237 @@
+
+B004.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Beard
+  rotate: true
+  xy: 130, 2
+  size: 45, 33
+  orig: 47, 35
+  offset: 1, 1
+  index: -1
+Cloak_1
+  rotate: true
+  xy: 2, 293
+  size: 140, 137
+  orig: 140, 137
+  offset: 0, 0
+  index: -1
+Crow
+  rotate: true
+  xy: 2, 195
+  size: 96, 81
+  orig: 96, 81
+  offset: 0, 0
+  index: -1
+Gad_1
+  rotate: true
+  xy: 2, 34
+  size: 75, 50
+  orig: 77, 52
+  offset: 1, 1
+  index: -1
+Gad_2
+  rotate: true
+  xy: 141, 332
+  size: 101, 45
+  orig: 103, 47
+  offset: 1, 1
+  index: -1
+Gad_3
+  rotate: true
+  xy: 236, 107
+  size: 76, 46
+  orig: 78, 48
+  offset: 1, 1
+  index: -1
+Gad_4
+  rotate: false
+  xy: 2, 111
+  size: 65, 82
+  orig: 67, 84
+  offset: 1, 1
+  index: -1
+Gad_5
+  rotate: false
+  xy: 346, 262
+  size: 59, 21
+  orig: 61, 23
+  offset: 1, 1
+  index: -1
+Gad_6
+  rotate: false
+  xy: 123, 49
+  size: 48, 65
+  orig: 50, 67
+  offset: 1, 1
+  index: -1
+Gad_7
+  rotate: false
+  xy: 85, 195
+  size: 50, 19
+  orig: 52, 21
+  offset: 1, 1
+  index: -1
+Gad_8
+  rotate: false
+  xy: 188, 369
+  size: 54, 64
+  orig: 56, 66
+  offset: 1, 1
+  index: -1
+L_eye
+  rotate: false
+  xy: 370, 243
+  size: 21, 17
+  orig: 23, 19
+  offset: 1, 1
+  index: -1
+Mount
+  rotate: false
+  xy: 388, 298
+  size: 63, 19
+  orig: 65, 21
+  offset: 1, 1
+  index: -1
+R_eye
+  rotate: false
+  xy: 346, 242
+  size: 22, 18
+  orig: 24, 20
+  offset: 1, 1
+  index: -1
+R_hand
+  rotate: true
+  xy: 141, 185
+  size: 132, 142
+  orig: 132, 142
+  offset: 0, 0
+  index: -1
+Seed_2
+  rotate: true
+  xy: 2, 6
+  size: 26, 40
+  orig: 28, 42
+  offset: 1, 1
+  index: -1
+Seed_3
+  rotate: true
+  xy: 188, 335
+  size: 32, 50
+  orig: 34, 52
+  offset: 1, 1
+  index: -1
+Seed_4
+  rotate: true
+  xy: 334, 216
+  size: 22, 39
+  orig: 24, 41
+  offset: 1, 1
+  index: -1
+Shadow_beard
+  rotate: false
+  xy: 346, 285
+  size: 40, 32
+  orig: 42, 34
+  offset: 1, 1
+  index: -1
+Shield_1
+  rotate: false
+  xy: 185, 111
+  size: 49, 72
+  orig: 51, 74
+  offset: 1, 1
+  index: -1
+Shield_2
+  rotate: false
+  xy: 85, 216
+  size: 52, 75
+  orig: 54, 77
+  offset: 1, 1
+  index: -1
+Shield_3
+  rotate: true
+  xy: 54, 5
+  size: 42, 74
+  orig: 44, 76
+  offset: 1, 1
+  index: -1
+Shield_4
+  rotate: false
+  xy: 285, 240
+  size: 59, 77
+  orig: 61, 79
+  offset: 1, 1
+  index: -1
+Shield_6
+  rotate: true
+  xy: 284, 107
+  size: 42, 62
+  orig: 44, 64
+  offset: 1, 1
+  index: -1
+Shiled_5
+  rotate: false
+  xy: 285, 151
+  size: 47, 87
+  orig: 49, 89
+  offset: 1, 1
+  index: -1
+Sod2_L_leg
+  rotate: true
+  xy: 334, 199
+  size: 15, 24
+  orig: 15, 24
+  offset: 0, 0
+  index: -1
+Sod3_R_leg
+  rotate: true
+  xy: 188, 321
+  size: 12, 27
+  orig: 12, 27
+  offset: 0, 0
+  index: -1
+Sodier_1
+  rotate: false
+  xy: 131, 116
+  size: 52, 67
+  orig: 52, 67
+  offset: 0, 0
+  index: -1
+Sodier_2
+  rotate: false
+  xy: 69, 49
+  size: 52, 66
+  orig: 54, 68
+  offset: 1, 1
+  index: -1
+Sodier_3
+  rotate: false
+  xy: 69, 117
+  size: 60, 76
+  orig: 62, 78
+  offset: 1, 1
+  index: -1
+Sodier_4
+  rotate: false
+  xy: 173, 43
+  size: 46, 66
+  orig: 48, 68
+  offset: 1, 1
+  index: -1
+head_king
+  rotate: true
+  xy: 248, 319
+  size: 191, 156
+  orig: 191, 156
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 2, 435
+  size: 244, 75
+  orig: 244, 75
+  offset: 0, 0
+  index: -1

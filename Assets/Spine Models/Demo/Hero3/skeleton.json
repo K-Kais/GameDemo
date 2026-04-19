@@ -1,0 +1,86 @@
+{
+"skeleton": {
+	"hash": "TsjxUaZ3suWZ/kf8ESb2A4FszVs",
+	"spine": "3.8.99",
+	"x": -96.02,
+	"y": 19.36,
+	"width": 136.6,
+	"height": 116.6,
+	"images": "../Hero/hero3/",
+	"audio": ""
+},
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone", "parent": "root", "length": 112.13, "rotation": 96.34, "x": 4.1, "y": 20.41 }
+],
+"slots": [
+	{ "name": "final1", "bone": "bone", "attachment": "hero3" }
+],
+"skins": [
+	{
+		"name": "default",
+		"attachments": {
+			"final1": {
+				"hero3": { "x": 71.09, "y": -5.94, "rotation": -96.59, "width": 167, "height": 199 }
+			}
+		}
+	}
+],
+"events": {
+	"OnAttack": {},
+	"OnDie": {}
+},
+"animations": {
+	"Attack": {
+		"bones": {
+			"bone": {
+				"rotate": [
+					{ "angle": 0.44 },
+					{ "time": 0.8333, "angle": -6.57 },
+					{ "time": 1.5, "angle": 0.44 }
+				]
+			}
+		},
+		"events": [
+			{ "time": 0.6667, "name": "OnAttack", "string": "OnAttack" }
+		]
+	},
+	"Die": {
+		"bones": {
+			"bone": {
+				"rotate": [
+					{ "angle": 0.44 },
+					{ "time": 0.8333, "angle": 81.52 },
+					{ "time": 1.5, "angle": 90.8 }
+				]
+			}
+		},
+		"events": [
+			{ "time": 1.5, "name": "OnAttack", "string": "OnAttack" },
+			{ "time": 1.5, "name": "OnDie", "string": "OnDie" }
+		]
+	},
+	"Idle": {
+		"bones": {
+			"bone": {
+				"rotate": [
+					{ "angle": 0.44 },
+					{ "time": 0.8333, "angle": -6.57 },
+					{ "time": 1.5, "angle": 0.44 }
+				]
+			}
+		}
+	},
+	"Walk": {
+		"bones": {
+			"bone": {
+				"rotate": [
+					{ "angle": 0.44 },
+					{ "time": 0.8333, "angle": -6.57 },
+					{ "time": 1.5, "angle": 0.44 }
+				]
+			}
+		}
+	}
+}
+}

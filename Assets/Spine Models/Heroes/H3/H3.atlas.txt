@@ -1,0 +1,202 @@
+
+H3.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+a1
+  rotate: true
+  xy: 844, 9
+  size: 40, 63
+  orig: 40, 63
+  offset: 0, 0
+  index: -1
+a2
+  rotate: true
+  xy: 726, 2
+  size: 47, 57
+  orig: 47, 57
+  offset: 0, 0
+  index: -1
+a3
+  rotate: false
+  xy: 1587, 163
+  size: 35, 39
+  orig: 40, 42
+  offset: 5, 2
+  index: -1
+cloth 1
+  rotate: false
+  xy: 1454, 145
+  size: 94, 52
+  orig: 105, 52
+  offset: 0, 0
+  index: -1
+cloth 2
+  rotate: false
+  xy: 1684, 183
+  size: 67, 71
+  orig: 75, 80
+  offset: 3, 9
+  index: -1
+cloth 3
+  rotate: true
+  xy: 1350, 117
+  size: 65, 102
+  orig: 65, 102
+  offset: 0, 0
+  index: -1
+cloth 4
+  rotate: false
+  xy: 1484, 205
+  size: 59, 49
+  orig: 59, 49
+  offset: 0, 0
+  index: -1
+cloth 5 b
+  rotate: false
+  xy: 726, 51
+  size: 151, 203
+  orig: 152, 204
+  offset: 1, 1
+  index: -1
+cloth 6 f
+  rotate: true
+  xy: 964, 19
+  size: 62, 208
+  orig: 67, 214
+  offset: 4, 6
+  index: -1
+ear ring
+  rotate: true
+  xy: 879, 52
+  size: 29, 53
+  orig: 39, 56
+  offset: 4, 1
+  index: -1
+face
+  rotate: true
+  xy: 1352, 14
+  size: 101, 124
+  orig: 107, 125
+  offset: 5, 0
+  index: -1
+glass
+  rotate: false
+  xy: 1082, 99
+  size: 173, 69
+  orig: 177, 69
+  offset: 4, 0
+  index: -1
+gun
+  rotate: false
+  xy: 1478, 19
+  size: 84, 124
+  orig: 84, 126
+  offset: 0, 0
+  index: -1
+h1
+  rotate: true
+  xy: 1564, 4
+  size: 150, 176
+  orig: 170, 181
+  offset: 5, 1
+  index: -1
+h2
+  rotate: true
+  xy: 879, 83
+  size: 85, 201
+  orig: 87, 208
+  offset: 1, 2
+  index: -1
+h3
+  rotate: false
+  xy: 1212, 184
+  size: 157, 70
+  orig: 158, 70
+  offset: 0, 0
+  index: -1
+h4
+  rotate: false
+  xy: 1174, 8
+  size: 176, 89
+  orig: 176, 89
+  offset: 0, 0
+  index: -1
+h5
+  rotate: false
+  xy: 259, 13
+  size: 235, 241
+  orig: 238, 241
+  offset: 0, 0
+  index: -1
+hb
+  rotate: false
+  xy: 2, 16
+  size: 255, 238
+  orig: 265, 248
+  offset: 10, 10
+  index: -1
+head
+  rotate: true
+  xy: 496, 16
+  size: 238, 228
+  orig: 248, 236
+  offset: 3, 6
+  index: -1
+lb1
+  rotate: true
+  xy: 1257, 109
+  size: 73, 91
+  orig: 75, 92
+  offset: 0, 0
+  index: -1
+lb2
+  rotate: true
+  xy: 1550, 156
+  size: 46, 35
+  orig: 54, 38
+  offset: 6, 3
+  index: -1
+lf1
+  rotate: true
+  xy: 1371, 199
+  size: 55, 111
+  orig: 55, 112
+  offset: 0, 1
+  index: -1
+lf2
+  rotate: true
+  xy: 909, 3
+  size: 47, 53
+  orig: 47, 53
+  offset: 0, 0
+  index: -1
+medic box
+  rotate: true
+  xy: 1624, 170
+  size: 84, 58
+  orig: 87, 61
+  offset: 1, 1
+  index: -1
+neck
+  rotate: false
+  xy: 785, 2
+  size: 57, 47
+  orig: 61, 50
+  offset: 1, 2
+  index: -1
+pant
+  rotate: false
+  xy: 1545, 204
+  size: 56, 50
+  orig: 57, 50
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 879, 170
+  size: 331, 84
+  orig: 339, 94
+  offset: 3, 5
+  index: -1

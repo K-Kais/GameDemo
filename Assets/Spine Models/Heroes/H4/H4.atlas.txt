@@ -1,0 +1,160 @@
+
+H4.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+a1
+  rotate: true
+  xy: 991, 124
+  size: 44, 65
+  orig: 44, 65
+  offset: 0, 0
+  index: -1
+a2
+  rotate: true
+  xy: 1164, 131
+  size: 37, 52
+  orig: 37, 52
+  offset: 0, 0
+  index: -1
+a3
+  rotate: false
+  xy: 1175, 170
+  size: 39, 37
+  orig: 39, 37
+  offset: 0, 0
+  index: -1
+a4
+  rotate: true
+  xy: 1175, 209
+  size: 45, 42
+  orig: 45, 42
+  offset: 0, 0
+  index: -1
+body
+  rotate: true
+  xy: 1219, 165
+  size: 89, 128
+  orig: 94, 128
+  offset: 0, 0
+  index: -1
+cl 1
+  rotate: true
+  xy: 1403, 146
+  size: 108, 93
+  orig: 112, 108
+  offset: 4, 8
+  index: -1
+cl 2
+  rotate: false
+  xy: 2, 4
+  size: 39, 30
+  orig: 40, 35
+  offset: 1, 0
+  index: -1
+cl 3 b
+  rotate: true
+  xy: 1312, 38
+  size: 125, 89
+  orig: 125, 92
+  offset: 0, 3
+  index: -1
+face
+  rotate: false
+  xy: 1137, 31
+  size: 173, 98
+  orig: 191, 112
+  offset: 5, 8
+  index: -1
+hair b
+  rotate: false
+  xy: 928, 30
+  size: 207, 86
+  orig: 217, 112
+  offset: 0, 12
+  index: -1
+hair f
+  rotate: false
+  xy: 542, 84
+  size: 298, 170
+  orig: 299, 170
+  offset: 1, 0
+  index: -1
+head
+  rotate: false
+  xy: 287, 35
+  size: 253, 219
+  orig: 266, 221
+  offset: 12, 0
+  index: -1
+hip
+  rotate: false
+  xy: 903, 118
+  size: 86, 50
+  orig: 86, 50
+  offset: 0, 0
+  index: -1
+khien
+  rotate: true
+  xy: 2, 36
+  size: 218, 283
+  orig: 218, 283
+  offset: 0, 0
+  index: -1
+lb 1
+  rotate: true
+  xy: 842, 89
+  size: 79, 59
+  orig: 80, 59
+  offset: 0, 0
+  index: -1
+lb 2
+  rotate: true
+  xy: 777, 21
+  size: 61, 83
+  orig: 62, 83
+  offset: 1, 0
+  index: -1
+lb 3
+  rotate: false
+  xy: 1107, 131
+  size: 55, 37
+  orig: 56, 37
+  offset: 1, 0
+  index: -1
+lf 1
+  rotate: false
+  xy: 696, 2
+  size: 79, 80
+  orig: 87, 81
+  offset: 0, 1
+  index: -1
+lf 2
+  rotate: true
+  xy: 862, 18
+  size: 69, 64
+  orig: 69, 64
+  offset: 0, 0
+  index: -1
+lf 3
+  rotate: false
+  xy: 1058, 120
+  size: 47, 48
+  orig: 53, 48
+  offset: 5, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 842, 170
+  size: 331, 84
+  orig: 339, 94
+  offset: 3, 5
+  index: -1
+weapon
+  rotate: false
+  xy: 542, 3
+  size: 152, 79
+  orig: 153, 79
+  offset: 1, 0
+  index: -1

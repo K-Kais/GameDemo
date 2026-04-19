@@ -1,0 +1,167 @@
+
+E_109.png
+size: 264,264
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Body
+  rotate: false
+  xy: 2, 62
+  size: 100, 112
+  orig: 102, 114
+  offset: 1, 1
+  index: -1
+Grapes_1
+  rotate: false
+  xy: 50, 10
+  size: 48, 50
+  orig: 50, 52
+  offset: 1, 1
+  index: -1
+Grapes_2
+  rotate: false
+  xy: 2, 7
+  size: 46, 53
+  orig: 48, 55
+  offset: 1, 1
+  index: -1
+Grapes_3
+  rotate: false
+  xy: 176, 18
+  size: 40, 42
+  orig: 42, 44
+  offset: 1, 1
+  index: -1
+Grapes_4
+  rotate: false
+  xy: 100, 17
+  size: 39, 43
+  orig: 41, 45
+  offset: 1, 1
+  index: -1
+L_eye
+  rotate: true
+  xy: 218, 38
+  size: 17, 18
+  orig: 19, 20
+  offset: 1, 1
+  index: -1
+L_eyebrow
+  rotate: false
+  xy: 201, 62
+  size: 26, 17
+  orig: 28, 19
+  offset: 1, 1
+  index: -1
+L_eyeshadow
+  rotate: false
+  xy: 229, 57
+  size: 26, 22
+  orig: 28, 24
+  offset: 1, 1
+  index: -1
+L_hand_1
+  rotate: true
+  xy: 141, 17
+  size: 43, 33
+  orig: 45, 35
+  offset: 1, 1
+  index: -1
+L_hand_2
+  rotate: true
+  xy: 201, 91
+  size: 22, 15
+  orig: 24, 17
+  offset: 1, 1
+  index: -1
+Leaf
+  rotate: true
+  xy: 180, 115
+  size: 70, 59
+  orig: 71, 59
+  offset: 1, 0
+  index: -1
+Mount
+  rotate: true
+  xy: 248, 220
+  size: 21, 11
+  orig: 23, 13
+  offset: 1, 1
+  index: -1
+Petiole
+  rotate: false
+  xy: 241, 130
+  size: 20, 26
+  orig: 22, 28
+  offset: 1, 1
+  index: -1
+R_eye
+  rotate: false
+  xy: 248, 243
+  size: 14, 19
+  orig: 16, 21
+  offset: 1, 1
+  index: -1
+R_eye_brow
+  rotate: true
+  xy: 241, 106
+  size: 22, 20
+  orig: 24, 22
+  offset: 1, 1
+  index: -1
+R_eyeshadow
+  rotate: true
+  xy: 218, 97
+  size: 16, 19
+  orig: 18, 21
+  offset: 1, 1
+  index: -1
+R_hand_1
+  rotate: true
+  xy: 180, 62
+  size: 42, 19
+  orig: 44, 21
+  offset: 1, 1
+  index: -1
+R_hand_2
+  rotate: false
+  xy: 239, 81
+  size: 23, 23
+  orig: 25, 25
+  offset: 1, 1
+  index: -1
+R_hand_3
+  rotate: true
+  xy: 248, 195
+  size: 23, 9
+  orig: 25, 11
+  offset: 1, 1
+  index: -1
+R_leg_1
+  rotate: true
+  xy: 241, 158
+  size: 16, 21
+  orig: 16, 21
+  offset: 0, 0
+  index: -1
+R_leg_2
+  rotate: false
+  xy: 248, 176
+  size: 7, 17
+  orig: 9, 19
+  offset: 1, 1
+  index: -1
+Tallith_1
+  rotate: true
+  xy: 104, 62
+  size: 112, 74
+  orig: 112, 74
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 2, 187
+  size: 244, 75
+  orig: 244, 75
+  offset: 0, 0
+  index: -1
