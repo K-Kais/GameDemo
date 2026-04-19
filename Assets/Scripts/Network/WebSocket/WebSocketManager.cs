@@ -9,6 +9,7 @@ namespace GameDemo.Network
 {
     public class WebSocketManager : MonoBehaviour
     {
+        public static WebSocketManager Instance;
         [Header("Server")]
         [SerializeField] private string apiBaseUrl = "http://localhost:5268";
         [SerializeField] private string webSocketPath = "/ws";
@@ -23,11 +24,13 @@ namespace GameDemo.Network
         private WebSocket webSocket;
         private string currentMapId = string.Empty;
         private string sessionToken = string.Empty;
+        private string localPlayerId = string.Empty;
 
         public bool IsConnected => webSocket != null && webSocket.State == WebSocketState.Open;
         public WebSocketState ConnectionState => webSocket?.State ?? WebSocketState.Closed;
         public string CurrentMapId => currentMapId;
         public string SessionToken => sessionToken;
+        public string LocalPlayerId => localPlayerId;
 
         public event Action OnConnected;
         public event Action<WebSocketCloseCode> OnDisconnected;
@@ -36,10 +39,17 @@ namespace GameDemo.Network
         public event Action<PlayerMapMessage> OnPlayerJoinedMap;
         public event Action<PlayerMapMessage> OnPlayerLeftMap;
         public event Action<MoveMessage> OnPlayerMoved;
+        public event Action<InputMessage> OnEntitySync;
+        public event Action<InputBatchMessage> OnEntitySyncBatch;
         public event Action<ChatMessage> OnChatReceived;
         public event Action<PongMessage> OnPong;
         public event Action<ServerErrorMessage> OnServerError;
         public event Action<OpCode, string> OnRawMessage;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private async void Start()
         {
@@ -84,6 +94,7 @@ namespace GameDemo.Network
             }
 
             sessionToken = loginResult.Data.token;
+            localPlayerId = loginResult.Data.userId ?? string.Empty;
             await ConnectWithTokenAsync(sessionToken);
         }
 
@@ -100,6 +111,11 @@ namespace GameDemo.Network
             if (!string.IsNullOrWhiteSpace(token))
             {
                 sessionToken = token;
+            }
+
+            if (string.IsNullOrWhiteSpace(localPlayerId))
+            {
+                localPlayerId = TryExtractPlayerIdFromToken(sessionToken);
             }
 
             var wsUrl = BuildWebSocketUrl(sessionToken);
@@ -141,6 +157,16 @@ namespace GameDemo.Network
                 x = x,
                 y = y
             });
+        }
+
+        public async Task SendInputAsync(EntitySyncData data)
+        {
+            if (data == null)
+            {
+                return;
+            }
+
+            await SendAsync(OpCode.Input, data);
         }
 
         public async Task ChatAsync(string message)
@@ -250,48 +276,75 @@ namespace GameDemo.Network
             switch (opCode)
             {
                 case OpCode.MapSnapshot:
-                {
-                    var data = Deserialize<MapSnapshotMessage>(rawPayload);
-                    currentMapId = data.mapId;
-                    OnMapSnapshot?.Invoke(data);
-                    return;
-                }
+                    {
+                        var data = Deserialize<MapSnapshotMessage>(rawPayload);
+                        currentMapId = data.mapId;
+                        if (!string.IsNullOrWhiteSpace(data.selfPlayerId))
+                        {
+                            localPlayerId = data.selfPlayerId;
+                        }
+
+                        OnMapSnapshot?.Invoke(data);
+                        return;
+                    }
                 case OpCode.PlayerJoinedMap:
-                {
-                    var data = Deserialize<PlayerMapMessage>(rawPayload);
-                    OnPlayerJoinedMap?.Invoke(data);
-                    return;
-                }
+                    {
+                        var data = Deserialize<PlayerMapMessage>(rawPayload);
+                        OnPlayerJoinedMap?.Invoke(data);
+                        return;
+                    }
                 case OpCode.PlayerLeftMap:
-                {
-                    var data = Deserialize<PlayerMapMessage>(rawPayload);
-                    OnPlayerLeftMap?.Invoke(data);
-                    return;
-                }
+                    {
+                        var data = Deserialize<PlayerMapMessage>(rawPayload);
+                        OnPlayerLeftMap?.Invoke(data);
+                        return;
+                    }
                 case OpCode.Move:
-                {
-                    var data = Deserialize<MoveMessage>(rawPayload);
-                    OnPlayerMoved?.Invoke(data);
-                    return;
-                }
+                    {
+                        var data = Deserialize<MoveMessage>(rawPayload);
+                        OnPlayerMoved?.Invoke(data);
+                        return;
+                    }
                 case OpCode.Chat:
-                {
-                    var data = Deserialize<ChatMessage>(rawPayload);
-                    OnChatReceived?.Invoke(data);
-                    return;
-                }
+                    {
+                        var data = Deserialize<ChatMessage>(rawPayload);
+                        OnChatReceived?.Invoke(data);
+                        return;
+                    }
+                case OpCode.Input:
+                    {
+                        var batch = Deserialize<InputBatchMessage>(rawPayload);
+                        if (batch.players != null && batch.players.Length > 0)
+                        {
+                            OnEntitySyncBatch?.Invoke(batch);
+                            for (var i = 0; i < batch.players.Length; i++)
+                            {
+                                OnEntitySync?.Invoke(batch.players[i]);
+                            }
+
+                            return;
+                        }
+
+                        var data = Deserialize<InputMessage>(rawPayload);
+                        if (!string.IsNullOrWhiteSpace(data.playerId))
+                        {
+                            OnEntitySync?.Invoke(data);
+                        }
+
+                        return;
+                    }
                 case OpCode.Pong:
-                {
-                    var data = Deserialize<PongMessage>(rawPayload);
-                    OnPong?.Invoke(data);
-                    return;
-                }
+                    {
+                        var data = Deserialize<PongMessage>(rawPayload);
+                        OnPong?.Invoke(data);
+                        return;
+                    }
                 case OpCode.Error:
-                {
-                    var data = Deserialize<ServerErrorMessage>(rawPayload);
-                    OnServerError?.Invoke(data);
-                    return;
-                }
+                    {
+                        var data = Deserialize<ServerErrorMessage>(rawPayload);
+                        OnServerError?.Invoke(data);
+                        return;
+                    }
                 default:
                     Debug.Log($"[WebSocket] Unhandled opcode {(byte)opCode} payload: {rawPayload}");
                     return;
@@ -331,6 +384,57 @@ namespace GameDemo.Network
                 Debug.LogWarning($"[WebSocket] Failed to parse {typeof(T).Name}: {ex.Message}");
                 return new T();
             }
+        }
+
+        private static string TryExtractPlayerIdFromToken(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return string.Empty;
+            }
+
+            var parts = token.Split('.');
+            if (parts.Length < 2)
+            {
+                return string.Empty;
+            }
+
+            var payload = parts[1]
+                .Replace('-', '+')
+                .Replace('_', '/');
+
+            switch (payload.Length % 4)
+            {
+                case 2:
+                    payload += "==";
+                    break;
+                case 3:
+                    payload += "=";
+                    break;
+            }
+
+            try
+            {
+                var json = Encoding.UTF8.GetString(Convert.FromBase64String(payload));
+                var jwtPayload = JsonUtility.FromJson<JwtPayload>(json);
+                return jwtPayload?.sub ?? string.Empty;
+            }
+            catch (FormatException ex)
+            {
+                Debug.LogWarning($"[WebSocket] Invalid JWT payload format: {ex.Message}");
+                return string.Empty;
+            }
+            catch (ArgumentException ex)
+            {
+                Debug.LogWarning($"[WebSocket] Invalid JWT payload argument: {ex.Message}");
+                return string.Empty;
+            }
+        }
+
+        [Serializable]
+        private sealed class JwtPayload
+        {
+            public string sub = string.Empty;
         }
     }
 }

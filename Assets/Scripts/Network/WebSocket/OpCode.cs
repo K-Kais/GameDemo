@@ -10,6 +10,7 @@ namespace GameDemo.Network
         Move = 5,
         MapSnapshot = 6,
         Chat = 7,
+        Input = 8,
         Error = 255
     }
 }

@@ -49,12 +49,16 @@ namespace GameDemo.Network
         public string userName = string.Empty;
         public float x;
         public float y;
+        public float dirX;
+        public float dirY;
+        public string state = string.Empty;
     }
 
     [Serializable]
     public sealed class MapSnapshotMessage
     {
         public string mapId = string.Empty;
+        public string selfPlayerId = string.Empty;
         public MapPlayerSnapshot[] players = Array.Empty<MapPlayerSnapshot>();
     }
 
@@ -72,6 +76,24 @@ namespace GameDemo.Network
         public string playerId = string.Empty;
         public float x;
         public float y;
+    }
+
+    [Serializable]
+    public sealed class InputMessage
+    {
+        public string playerId = string.Empty;
+        public float x;
+        public float y;
+        public float dirX;
+        public float dirY;
+        public string state = string.Empty;
+    }
+
+    [Serializable]
+    public sealed class InputBatchMessage
+    {
+        public string mapId = string.Empty;
+        public InputMessage[] players = Array.Empty<InputMessage>();
     }
 
     [Serializable]
