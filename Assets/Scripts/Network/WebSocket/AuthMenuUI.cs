@@ -121,8 +121,13 @@ namespace GameDemo.Network
                 panelSize.y);
 
             GUILayout.BeginArea(rect, GUI.skin.window);
+            if (GUI.Button(new Rect(panelSize.x - 34f, 6f, 28f, 24f), "X"))
+            {
+                _isVisible = false;
+            }
+
             GUILayout.Space(8f);
-            GUILayout.Label("Đăng nhập / Đăng ký / Tạo nhân vật");
+            GUILayout.Label("Đăng nhập / Đăng ký / Tên nhân vật/ Chọn nhân vật");
             GUILayout.Space(8f);
 
             DrawStepHeader();
@@ -167,7 +172,7 @@ namespace GameDemo.Network
             }
 
             GUI.enabled = !_isSubmitting && _pendingAuth != null && !string.IsNullOrWhiteSpace(_pendingAuth.token);
-            if (GUILayout.Button("Tạo nhân vật", GUILayout.Height(30f)))
+            if (GUILayout.Button("Tên nhân vật", GUILayout.Height(30f)))
             {
                 _step = AuthStep.CreateCharacter;
             }
@@ -234,7 +239,7 @@ namespace GameDemo.Network
             GUILayout.Space(10f);
 
             GUI.enabled = !_isSubmitting;
-            if (GUILayout.Button("Tạo nhân vật", GUILayout.Height(36f)))
+            if (GUILayout.Button("Xác nhận tên nhân vật", GUILayout.Height(36f)))
             {
                 _ = SubmitCreateCharacterAsync();
             }
@@ -299,25 +304,26 @@ namespace GameDemo.Network
             if (result.Data.requiresCharacterCreation)
             {
                 _step = AuthStep.CreateCharacter;
-                _statusMessage = "Đăng nhập thành công. Vui lòng tạo nhân vật trước khi vào game.";
+                _statusMessage = "Đăng nhập thành công. Vui lòng tạo tên nhân vật trước khi vào game.";
                 ShowNotice("Đăng nhập thành công!", false);
                 _isVisible = true;
                 return;
             }
 
             await webSocketManager.ConnectAuthenticatedSessionAsync(result.Data);
-            _hasAuthenticated = await WaitForAuthenticationReadyAsync();
-            if (!_hasAuthenticated)
+            var authReady = await WaitForAuthenticationReadyAsync();
+            if (authReady)
             {
-                _statusMessage = "Đăng nhập thành công nhưng chưa kết nối được vào game.";
-                _isVisible = true;
-                ShowNotice(_statusMessage, true);
-                return;
+                _hasAuthenticated = true;
+                _statusMessage = "Đăng nhập thành công.";
+            }
+            else
+            {
+                _statusMessage = "Đăng nhập thành công. Đang chờ kết nối vào game...";
             }
 
-            _statusMessage = "Đăng nhập thành công. Nhấn tab Chọn nhân vật để mở.";
             ShowNotice("Đăng nhập thành công!", false);
-            _isVisible = true;
+            ShowCharacterSelectionTab();
         }
 
         private async Task SubmitRegisterAsync()
@@ -398,18 +404,19 @@ namespace GameDemo.Network
 
             _pendingAuth = result.Data;
             await webSocketManager.ConnectAuthenticatedSessionAsync(result.Data);
-            _hasAuthenticated = await WaitForAuthenticationReadyAsync();
-            if (!_hasAuthenticated)
+            var authReady = await WaitForAuthenticationReadyAsync();
+            if (authReady)
             {
-                _statusMessage = "Tạo nhân vật thành công nhưng chưa kết nối được vào game.";
-                _isVisible = true;
-                ShowNotice(_statusMessage, true);
-                return;
+                _hasAuthenticated = true;
+                _statusMessage = "Tạo tên nhân vật thành công.";
+            }
+            else
+            {
+                _statusMessage = "Tạo tên nhân vật thành công. Đang chờ kết nối vào game...";
             }
 
-            _statusMessage = "Tạo nhân vật thành công. Nhấn tab Chọn nhân vật để mở.";
-            ShowNotice("Tạo nhân vật thành công", false);
-            _isVisible = true;
+            ShowNotice("Tạo tên nhân vật thành công", false);
+            ShowCharacterSelectionTab();
         }
 
         private static string ValidateLoginInput(string userName, string password)
@@ -574,13 +581,7 @@ namespace GameDemo.Network
 
         public bool ShowCharacterSelectionTab()
         {
-            ResolveWebSocketManager();
-            if (webSocketManager == null || !webSocketManager.IsConnected)
-            {
-                return false;
-            }
-
-            _hasAuthenticated = true;
+            _hasAuthenticated = _hasAuthenticated || IsAuthenticationSuccessful();
             _step = AuthStep.CharacterSelection;
             _isVisible = true;
             return true;
