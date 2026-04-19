@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class CharacterSelectionMenu : MonoBehaviour
 {
+    public static CharacterSelectionMenu Instance { get; private set; }
+
     [SerializeField] private MapSpawnManager mapSpawnManager;
     [SerializeField] private bool showOnStart = true;
     [SerializeField] private bool hideAfterSelect = true;
@@ -14,12 +16,27 @@ public class CharacterSelectionMenu : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
+
         if (mapSpawnManager == null)
         {
             mapSpawnManager = FindAnyObjectByType<MapSpawnManager>();
         }
 
         _isVisible = showOnStart;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    public void ShowMenu()
+    {
+        _isVisible = true;
     }
 
     private void Update()

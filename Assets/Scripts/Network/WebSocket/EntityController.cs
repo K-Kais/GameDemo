@@ -66,6 +66,7 @@ namespace GameDemo.Network
         private float _baseSkeletonG = 1f;
         private float _baseSkeletonB = 1f;
         private float _baseSkeletonA = 1f;
+        private global::CharacterSelectionMenu _characterSelectionMenu;
 
         private void Awake()
         {
@@ -673,7 +674,7 @@ namespace GameDemo.Network
             }
 
             const float popupWidth = 320f;
-            const float popupHeight = 140f;
+            const float popupHeight = 190f;
             var rect = new Rect(
                 (Screen.width - popupWidth) * 0.5f,
                 (Screen.height - popupHeight) * 0.5f,
@@ -684,8 +685,14 @@ namespace GameDemo.Network
             GUILayout.FlexibleSpace();
             GUILayout.Label("Ban da chet");
             GUILayout.Space(8f);
+            if (GUILayout.Button("Chon nhan vat", GUILayout.Height(38f)))
+            {
+                OpenCharacterSelectionMenu();
+            }
+
+            GUILayout.Space(6f);
             GUI.enabled = !_respawnRequested;
-            if (GUILayout.Button(_respawnRequested ? "Dang hoi sinh..." : "Reporn", GUILayout.Height(38f)))
+            if (GUILayout.Button(_respawnRequested ? "Dang hoi sinh..." : "Hoi sinh", GUILayout.Height(38f)))
             {
                 _respawnRequested = true;
                 _networkSync?.Respawn();
@@ -694,6 +701,20 @@ namespace GameDemo.Network
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUILayout.EndArea();
+        }
+
+        private void OpenCharacterSelectionMenu()
+        {
+            if (_characterSelectionMenu == null)
+            {
+                _characterSelectionMenu = global::CharacterSelectionMenu.Instance;
+                if (_characterSelectionMenu == null)
+                {
+                    _characterSelectionMenu = FindAnyObjectByType<global::CharacterSelectionMenu>();
+                }
+            }
+
+            _characterSelectionMenu?.ShowMenu();
         }
 
         private void SyncOverlaySorting()

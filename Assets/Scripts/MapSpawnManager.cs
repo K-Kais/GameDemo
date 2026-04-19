@@ -21,6 +21,7 @@ public class MapSpawnManager : MonoBehaviour
     private readonly List<string> _removeBuffer = new List<string>();
     private readonly Dictionary<string, EntitySyncData> _latestSyncByPlayerId = new Dictionary<string, EntitySyncData>();
     private readonly Dictionary<string, int> _characterIndexByPlayerId = new Dictionary<string, int>();
+    private readonly Dictionary<string, int> _spawnedCharacterIndexByPlayerId = new Dictionary<string, int>();
     private int _selectedCharacterIndex;
     private bool _hasConfirmedCharacterSelection;
     private string _lastKnownLocalPlayerId = string.Empty;
@@ -104,6 +105,11 @@ public class MapSpawnManager : MonoBehaviour
 
             _snapshotIds.Add(item.playerId);
             SetCharacterIndex(item.playerId, item.characterIndex);
+            if (IsLocalPlayerId(item.playerId) && item.characterIndex >= 0)
+            {
+                _selectedCharacterIndex = item.characterIndex;
+            }
+
             var syncData = new EntitySyncData
             {
                 x = item.x,
@@ -243,6 +249,11 @@ public class MapSpawnManager : MonoBehaviour
         if (IsLocalPlayerId(message.playerId))
         {
             _lastKnownLocalPlayerId = message.playerId;
+            if (message.characterIndex >= 0)
+            {
+                _selectedCharacterIndex = message.characterIndex;
+            }
+
             var localEntity = EnsureEntity(message.playerId);
             if (localEntity != null)
             {
@@ -264,15 +275,26 @@ public class MapSpawnManager : MonoBehaviour
 
     private EntityController EnsureEntity(string playerId)
     {
-        if (_entities.TryGetValue(playerId, out var existing))
-        {
-            return existing;
-        }
-
         var isLocal = IsLocalPlayerId(playerId);
         if (isLocal && IsAwaitingCharacterSelection)
         {
             return null;
+        }
+
+        var expectedCharacterIndex = ResolveExpectedCharacterIndex(playerId, isLocal);
+        if (_entities.TryGetValue(playerId, out var existing))
+        {
+            if (!_spawnedCharacterIndexByPlayerId.ContainsKey(playerId) && expectedCharacterIndex >= 0)
+            {
+                _spawnedCharacterIndexByPlayerId[playerId] = expectedCharacterIndex;
+            }
+
+            if (ShouldSwapCharacterPrefab(playerId, expectedCharacterIndex))
+            {
+                return RecreateEntity(playerId, existing, expectedCharacterIndex, isLocal);
+            }
+
+            return existing;
         }
 
         EntityController entity;
@@ -282,7 +304,7 @@ public class MapSpawnManager : MonoBehaviour
         }
         else
         {
-            var sourcePrefab = ResolveSpawnPrefab(playerId, isLocal);
+            var sourcePrefab = ResolveSpawnPrefab(playerId, isLocal, expectedCharacterIndex);
             if (sourcePrefab == null)
             {
                 if (!isLocal)
@@ -297,20 +319,7 @@ public class MapSpawnManager : MonoBehaviour
             entity = Instantiate(sourcePrefab, Vector3.zero, Quaternion.identity, playerRoot);
         }
 
-        if (!isLocal)
-        {
-            var sync = entity.GetComponent<EntityNetworkSync>();
-            if (sync != null)
-            {
-                sync.enabled = false;
-            }
-        }
-        else
-        {
-            player = entity;
-        }
-
-        _entities[playerId] = entity;
+        ConfigureSpawnedEntity(playerId, entity, isLocal, expectedCharacterIndex);
         return entity;
     }
 
@@ -337,12 +346,13 @@ public class MapSpawnManager : MonoBehaviour
         _selectedCharacterIndex = index;
         _hasConfirmedCharacterSelection = true;
         var localPlayerId = ResolveLocalPlayerId();
+        var shouldRespawnAfterSelect = IsLocalPlayerDead(localPlayerId);
+        TrySpawnLocalPlayerIfReady();
         if (!string.IsNullOrWhiteSpace(localPlayerId))
         {
-            _characterIndexByPlayerId[localPlayerId] = index;
+            SendCharacterSelectionInput(localPlayerId, index, shouldRespawnAfterSelect);
         }
 
-        TrySpawnLocalPlayerIfReady();
         return true;
     }
 
@@ -356,6 +366,7 @@ public class MapSpawnManager : MonoBehaviour
         _entities.Remove(playerId);
         _latestSyncByPlayerId.Remove(playerId);
         _characterIndexByPlayerId.Remove(playerId);
+        _spawnedCharacterIndexByPlayerId.Remove(playerId);
 
         if (player != null && entity == player)
         {
@@ -397,34 +408,30 @@ public class MapSpawnManager : MonoBehaviour
         return 0;
     }
 
-    private EntityController ResolveSpawnPrefab(string playerId, bool isLocalPlayer)
+    private EntityController ResolveSpawnPrefab(string playerId, bool isLocalPlayer, int expectedCharacterIndex)
     {
         if (playerPrefabs != null && playerPrefabs.Length > 0)
         {
-            if (isLocalPlayer)
+            var expected = GetPrefabByIndex(expectedCharacterIndex);
+            if (expected != null)
             {
-                var selected = GetPrefabByIndex(_selectedCharacterIndex);
-                if (selected != null)
-                {
-                    return selected;
-                }
+                return expected;
             }
-            else
+
+            if (!isLocalPlayer)
             {
-                var characterIndex = GetCharacterIndex(playerId);
-                if (characterIndex < 0)
+                if (expectedCharacterIndex >= 0)
                 {
-                    return null;
+                    Debug.LogWarning($"[MapSpawn] Remote character prefab missing at index {expectedCharacterIndex} for '{playerId}'.");
                 }
 
-                var selected = GetPrefabByIndex(characterIndex);
-                if (selected != null)
-                {
-                    return selected;
-                }
-
-                Debug.LogWarning($"[MapSpawn] Remote character prefab missing at index {characterIndex} for '{playerId}'.");
                 return null;
+            }
+
+            var selected = GetPrefabByIndex(_selectedCharacterIndex);
+            if (selected != null)
+            {
+                return selected;
             }
 
             for (var i = 0; i < playerPrefabs.Length; i++)
@@ -494,6 +501,143 @@ public class MapSpawnManager : MonoBehaviour
         {
             ApplyState(entity, syncData);
         }
+    }
+
+    private int ResolveExpectedCharacterIndex(string playerId, bool isLocalPlayer)
+    {
+        var characterIndex = GetCharacterIndex(playerId);
+        if (characterIndex >= 0)
+        {
+            return characterIndex;
+        }
+
+        return isLocalPlayer ? _selectedCharacterIndex : -1;
+    }
+
+    private bool ShouldSwapCharacterPrefab(string playerId, int expectedCharacterIndex)
+    {
+        if (expectedCharacterIndex < 0)
+        {
+            return false;
+        }
+
+        if (!_spawnedCharacterIndexByPlayerId.TryGetValue(playerId, out var spawnedCharacterIndex))
+        {
+            return false;
+        }
+
+        return spawnedCharacterIndex >= 0 && spawnedCharacterIndex != expectedCharacterIndex;
+    }
+
+    private EntityController RecreateEntity(string playerId, EntityController currentEntity, int expectedCharacterIndex, bool isLocalPlayer)
+    {
+        var sourcePrefab = ResolveSpawnPrefab(playerId, isLocalPlayer, expectedCharacterIndex);
+        if (sourcePrefab == null)
+        {
+            Debug.LogWarning($"[MapSpawn] Missing replacement prefab for player '{playerId}' character index {expectedCharacterIndex}.");
+            return currentEntity;
+        }
+
+        var spawnPosition = currentEntity != null ? currentEntity.transform.position : Vector3.zero;
+        var spawnRotation = currentEntity != null ? currentEntity.transform.rotation : Quaternion.identity;
+        var replacement = Instantiate(sourcePrefab, spawnPosition, spawnRotation, playerRoot);
+        ConfigureSpawnedEntity(playerId, replacement, isLocalPlayer, expectedCharacterIndex);
+        if (currentEntity != null)
+        {
+            Destroy(currentEntity.gameObject);
+        }
+
+        return replacement;
+    }
+
+    private void ConfigureSpawnedEntity(string playerId, EntityController entity, bool isLocalPlayer, int characterIndex)
+    {
+        if (entity == null)
+        {
+            return;
+        }
+
+        if (!isLocalPlayer)
+        {
+            var sync = entity.GetComponent<EntityNetworkSync>();
+            if (sync != null)
+            {
+                sync.enabled = false;
+            }
+        }
+        else
+        {
+            player = entity;
+        }
+
+        _entities[playerId] = entity;
+        if (characterIndex >= 0)
+        {
+            _spawnedCharacterIndexByPlayerId[playerId] = characterIndex;
+        }
+        else
+        {
+            _spawnedCharacterIndexByPlayerId.Remove(playerId);
+        }
+    }
+
+    private void SendCharacterSelectionInput(string localPlayerId, int selectedCharacterIndex, bool requestRespawn)
+    {
+        if (webSocketManager == null || !webSocketManager.IsConnected || string.IsNullOrWhiteSpace(localPlayerId))
+        {
+            return;
+        }
+
+        var payload = new EntitySyncData
+        {
+            characterIndex = selectedCharacterIndex,
+            state = AnimationStateNames.Idle,
+            respawnEvent = requestRespawn
+        };
+
+        if (_latestSyncByPlayerId.TryGetValue(localPlayerId, out var latestSync) && latestSync != null)
+        {
+            payload.x = latestSync.x;
+            payload.y = latestSync.y;
+            payload.dirX = latestSync.dirX;
+            payload.dirY = latestSync.dirY;
+            payload.state = string.IsNullOrWhiteSpace(latestSync.state) ? AnimationStateNames.Idle : latestSync.state;
+            payload.currentHp = latestSync.currentHp;
+            payload.maxHp = latestSync.maxHp;
+        }
+        else if (player != null)
+        {
+            var position = player.transform.position;
+            payload.x = position.x;
+            payload.y = position.y;
+            payload.dirX = player.direction.x;
+            payload.dirY = player.direction.y;
+            payload.state = string.IsNullOrWhiteSpace(player.state) ? AnimationStateNames.Idle : player.state;
+            payload.currentHp = player.currentHp;
+            payload.maxHp = player.maxHp;
+        }
+
+        _ = webSocketManager.SendInputAsync(payload);
+    }
+
+    private bool IsLocalPlayerDead(string localPlayerId)
+    {
+        if (!string.IsNullOrWhiteSpace(localPlayerId) &&
+            _latestSyncByPlayerId.TryGetValue(localPlayerId, out var latestSync) &&
+            latestSync != null)
+        {
+            if (latestSync.currentHp <= 0.01f)
+            {
+                return true;
+            }
+
+            if (AnimationStateNames.IsDead(latestSync.state))
+            {
+                return true;
+            }
+        }
+
+        return player != null && player.currentHp <= 0.01f;
     }
 
     private int GetCharacterIndex(string playerId)
