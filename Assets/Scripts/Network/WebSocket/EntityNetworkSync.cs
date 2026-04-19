@@ -7,8 +7,6 @@ namespace GameDemo.Network
         [SerializeField] private WebSocketManager webSocketManager;
         [SerializeField] private float sendInterval = 0.05f;
         [SerializeField] private float movementThreshold = 0.0001f;
-        [SerializeField] private string idleState = "Idle";
-        [SerializeField] private string moveState = "Move";
 
         private Vector3 _lastPosition;
         private Vector2 _lastDirection = Vector2.right;
@@ -18,7 +16,7 @@ namespace GameDemo.Network
         private bool _hasSentState;
         private float _nextSendTime;
         private EntityController _entityController;
-        public EntitySyncData syncData;
+        public EntitySyncData syncData = new EntitySyncData();
 
         private void Awake()
         {
@@ -45,6 +43,16 @@ namespace GameDemo.Network
         public void Attack()
         {
             syncData.attackEvent = true;
+        }
+
+        public void AttackHit()
+        {
+            syncData.attackHitEvent = true;
+        }
+
+        public void Respawn()
+        {
+            syncData.respawnEvent = true;
         }
 
         private void Update()
@@ -78,17 +86,26 @@ namespace GameDemo.Network
                 }
             }
 
+            if (syncData == null)
+            {
+                syncData = new EntitySyncData();
+            }
+
             var payload = syncData;
-            payload = syncData;
             payload.x = position.x;
             payload.y = position.y;
             payload.dirX = _lastDirection.x;
             payload.dirY = _lastDirection.y;
-            payload.state = isMoving ? moveState : idleState;
+            payload.state = isMoving ? AnimationStateNames.Walk : AnimationStateNames.Idle;
             payload.attackEvent = syncData.attackEvent;
+            payload.attackHitEvent = syncData.attackHitEvent;
+            payload.respawnEvent = syncData.respawnEvent;
 
             var hasChanged =
                 !_hasSentState ||
+                payload.attackEvent ||
+                payload.attackHitEvent ||
+                payload.respawnEvent ||
                 (position - _lastSentPosition).sqrMagnitude > movementThreshold ||
                 (_lastDirection - _lastSentDirection).sqrMagnitude > movementThreshold ||
                 !string.Equals(payload.state, _lastSentState, System.StringComparison.Ordinal);
@@ -106,6 +123,11 @@ namespace GameDemo.Network
             _lastSentDirection = _lastDirection;
             _lastSentState = payload.state;
             _hasSentState = true;
+
+            syncData.state = AnimationStateNames.Idle;
+            syncData.attackEvent = false;
+            syncData.attackHitEvent = false;
+            syncData.respawnEvent = false;
         }
     }
 }

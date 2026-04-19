@@ -11,7 +11,11 @@ namespace GameDemo.Network
         public float dirY;
         public string state = string.Empty;
         public bool attackEvent;
+        public bool attackHitEvent;
+        public bool respawnEvent;
         public bool skill1;
         public bool skill2;
+        public float currentHp;
+        public float maxHp;
     }
 }

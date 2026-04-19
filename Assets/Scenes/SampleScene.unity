@@ -414,6 +414,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -539,6 +540,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdc71368d2b2d01489ca7d42ef926ce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LocalPlayerCameraFollow
+  followOffset: {x: 0, y: 0, z: -10}
+  smoothTime: 0.12
+  maxSpeed: 100
 --- !u!4 &585776785 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8197194868802351163, guid: 0d5784cb0e57b8c4fad7bb4d4a2bb96f, type: 3}
@@ -830,7 +846,7 @@ MonoBehaviour:
   defaultMapId: world
   autoConnectOnStart: 1
   autoRegisterIfMissing: 1
-  autoUserName: demo_user
+  autoUserName: demo_user1
   autoPassword: 123456
 --- !u!4 &1067740996
 Transform:
@@ -1318,7 +1334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapSpawnManager
   webSocketManager: {fileID: 1067740995}
-  playerPrefab: {fileID: 3996962734559941137, guid: 58a15655a1db0ae448f67413df20aadf, type: 3}
+  playerPrefab: {fileID: -7242508374372187120, guid: a28465f29d66fea45b36ba3151d71561, type: 3}
   playerRoot: {fileID: 967262411}
   destroyRemoteOnDisconnect: 1
   player: {fileID: 0}

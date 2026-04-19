@@ -89,7 +89,19 @@ public class MapSpawnManager : MonoBehaviour
                 continue;
             }
 
-            ApplyState(entity, item.x, item.y, item.dirX, item.dirY, item.state);
+            ApplyState(entity, new EntitySyncData
+            {
+                x = item.x,
+                y = item.y,
+                dirX = item.dirX,
+                dirY = item.dirY,
+                state = item.state,
+                attackEvent = false,
+                attackHitEvent = false,
+                respawnEvent = false,
+                currentHp = item.currentHp,
+                maxHp = item.maxHp
+            });
         }
 
         _removeBuffer.Clear();
@@ -181,6 +193,13 @@ public class MapSpawnManager : MonoBehaviour
     {
         if (webSocketManager != null && string.Equals(message.playerId, webSocketManager.LocalPlayerId, System.StringComparison.Ordinal))
         {
+            var localEntity = EnsureEntity(message.playerId);
+            if (localEntity != null)
+            {
+                localEntity.ApplyNetworkHealth(message.currentHp, message.maxHp);
+                localEntity.ApplyServerState(message.state);
+            }
+
             return;
         }
 
@@ -190,7 +209,19 @@ public class MapSpawnManager : MonoBehaviour
             return;
         }
 
-        ApplyState(entity, message.x, message.y, message.dirX, message.dirY, message.state);
+        ApplyState(entity, new EntitySyncData
+        {
+            x = message.x,
+            y = message.y,
+            dirX = message.dirX,
+            dirY = message.dirY,
+            state = message.state,
+            attackEvent = message.attackEvent,
+            attackHitEvent = message.attackHitEvent,
+            respawnEvent = message.respawnEvent,
+            currentHp = message.currentHp,
+            maxHp = message.maxHp
+        });
     }
 
     private EntityController EnsureEntity(string playerId)
@@ -257,8 +288,8 @@ public class MapSpawnManager : MonoBehaviour
         }
     }
 
-    private static void ApplyState(EntityController entity, float x, float y, float dirX, float dirY, string state)
+    private static void ApplyState(EntityController entity, EntitySyncData syncData)
     {
-        entity.ApplyNetworkState(x, y, dirX, dirY, state);
+        entity.ApplyNetworkState(syncData);
     }
 }

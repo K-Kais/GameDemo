@@ -1,5 +1,7 @@
 using System;
 
+
+
 public sealed class EntityDataServer
 {
     public string PlayerId { get; }

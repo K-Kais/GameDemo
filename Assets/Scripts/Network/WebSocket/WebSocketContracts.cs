@@ -52,6 +52,8 @@ namespace GameDemo.Network
         public float dirX;
         public float dirY;
         public string state = string.Empty;
+        public float currentHp;
+        public float maxHp;
     }
 
     [Serializable]
@@ -87,6 +89,11 @@ namespace GameDemo.Network
         public float dirX;
         public float dirY;
         public string state = string.Empty;
+        public bool attackEvent;
+        public bool attackHitEvent;
+        public bool respawnEvent;
+        public float currentHp;
+        public float maxHp;
     }
 
     [Serializable]
