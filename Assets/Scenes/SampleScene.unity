@@ -633,7 +633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a487813ff2594334ab74325da0d06186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameDemo.Network.WebSocketManager
-  apiBaseUrl: http://localhost:5268
+  apiBaseUrl: http://45.32.107.220:5002
   webSocketPath: /ws
   defaultMapId: world
   autoConnectOnStart: 1
