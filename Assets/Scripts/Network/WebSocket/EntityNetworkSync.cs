@@ -12,6 +12,7 @@ namespace GameDemo.Network
         private Vector2 _lastDirection = Vector2.right;
         private Vector3 _lastSentPosition;
         private Vector2 _lastSentDirection = Vector2.right;
+        private int _lastSentCharacterIndex = -1;
         private string _lastSentState = string.Empty;
         private bool _hasSentState;
         private float _nextSendTime;
@@ -35,6 +36,7 @@ namespace GameDemo.Network
             _lastPosition = transform.position;
             _lastSentPosition = _lastPosition;
             _lastSentDirection = _lastDirection;
+            _lastSentCharacterIndex = -1;
             _lastSentState = string.Empty;
             _hasSentState = false;
             _nextSendTime = Time.time;
@@ -96,6 +98,9 @@ namespace GameDemo.Network
             payload.y = position.y;
             payload.dirX = _lastDirection.x;
             payload.dirY = _lastDirection.y;
+            payload.characterIndex = MapSpawnManager.Instance != null
+                ? MapSpawnManager.Instance.SelectedCharacterIndex
+                : -1;
             payload.state = isMoving ? AnimationStateNames.Walk : AnimationStateNames.Idle;
             payload.attackEvent = syncData.attackEvent;
             payload.attackHitEvent = syncData.attackHitEvent;
@@ -108,6 +113,7 @@ namespace GameDemo.Network
                 payload.respawnEvent ||
                 (position - _lastSentPosition).sqrMagnitude > movementThreshold ||
                 (_lastDirection - _lastSentDirection).sqrMagnitude > movementThreshold ||
+                payload.characterIndex != _lastSentCharacterIndex ||
                 !string.Equals(payload.state, _lastSentState, System.StringComparison.Ordinal);
 
             if (!hasChanged)
@@ -121,6 +127,7 @@ namespace GameDemo.Network
             _lastPosition = position;
             _lastSentPosition = position;
             _lastSentDirection = _lastDirection;
+            _lastSentCharacterIndex = payload.characterIndex;
             _lastSentState = payload.state;
             _hasSentState = true;
 

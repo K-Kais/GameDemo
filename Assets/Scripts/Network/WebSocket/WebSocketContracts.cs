@@ -51,6 +51,7 @@ namespace GameDemo.Network
         public float y;
         public float dirX;
         public float dirY;
+        public int characterIndex = -1;
         public string state = string.Empty;
         public float currentHp;
         public float maxHp;
@@ -88,6 +89,7 @@ namespace GameDemo.Network
         public float y;
         public float dirX;
         public float dirY;
+        public int characterIndex = -1;
         public string state = string.Empty;
         public bool attackEvent;
         public bool attackHitEvent;

@@ -12,8 +12,10 @@ GameObject:
   - component: {fileID: 635949247104030359}
   - component: {fileID: 3791347536479452976}
   - component: {fileID: 2984321594119598009}
+  - component: {fileID: 4207656981272409404}
+  - component: {fileID: -6608762065746731290}
   m_Layer: 0
-  m_Name: Monster_80_Mummy
+  m_Name: Mummy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,3 +130,60 @@ MonoBehaviour:
   _animationName: Idle
   loop: 1
   timeScale: 1
+--- !u!114 &4207656981272409404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5655773277518431289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a530c108e4a2fa4888d8eb5048ed311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameDemo.Network.EntityNetworkSync
+  webSocketManager: {fileID: 0}
+  sendInterval: 0.05
+  movementThreshold: 0.0001
+  syncData:
+    x: 0
+    y: 0
+    dirX: 0
+    dirY: 0
+    state: 
+    attackEvent: 0
+    attackHitEvent: 0
+    respawnEvent: 0
+    skill1: 0
+    skill2: 0
+    currentHp: 0
+    maxHp: 0
+--- !u!114 &-6608762065746731290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5655773277518431289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 912964b8e00d0274c8e555752feb41cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameDemo.Network.EntityController
+  moveSpeed: 5
+  attackHitNormalizedTime: 0.5
+  attackFallbackDuration: 0.4
+  remoteSmoothTime: 0.06
+  remotePredictionTime: 0.03
+  remoteMaxSpeed: 20
+  faceByDirection: 1
+  faceDirectionThreshold: 0.01
+  visualRoot: {fileID: 0}
+  showHealthBar: 1
+  healthBarLocalOffset: {x: 0, y: 5, z: 0}
+  healthBarSize: {x: 5, y: 0.5}
+  healthBarBackgroundColor: {r: 0, g: 0, b: 0, a: 0.7}
+  healthBarFillColor: {r: 0.2, g: 0.9, b: 0.2, a: 0.95}
+  enableHitFlash: 1
+  hitFlashDuration: 0.2
+  hitFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
