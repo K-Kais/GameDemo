@@ -1,3 +1,4 @@
+using GameDemo.Network;
 using UnityEngine;
 
 public class CharacterSelectionMenu : MonoBehaviour
@@ -5,17 +6,31 @@ public class CharacterSelectionMenu : MonoBehaviour
     public static CharacterSelectionMenu Instance { get; private set; }
 
     [SerializeField] private MapSpawnManager mapSpawnManager;
-    [SerializeField] private bool showOnStart = true;
+    [SerializeField] private WebSocketManager webSocketManager;
     [SerializeField] private bool hideAfterSelect = true;
-    [SerializeField] private KeyCode toggleMenuKey = KeyCode.Tab;
-    [SerializeField] private Vector2 panelSize = new Vector2(340f, 300f);
-    [SerializeField] private string panelTitle = "Chon Nhan Vat";
+    public bool _isVisible;
 
-    private bool _isVisible;
-    private GUIStyle _titleStyle;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    private static void EnsureInstance()
+    {
+        if (FindAnyObjectByType<CharacterSelectionMenu>() != null)
+        {
+            return;
+        }
+
+        var gameObject = new GameObject(nameof(CharacterSelectionMenu));
+        DontDestroyOnLoad(gameObject);
+        gameObject.AddComponent<CharacterSelectionMenu>();
+    }
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
 
         if (mapSpawnManager == null)
@@ -23,7 +38,8 @@ public class CharacterSelectionMenu : MonoBehaviour
             mapSpawnManager = FindAnyObjectByType<MapSpawnManager>();
         }
 
-        _isVisible = showOnStart;
+        ResolveWebSocketManager();
+        _isVisible = false;
     }
 
     private void OnDestroy()
@@ -36,27 +52,23 @@ public class CharacterSelectionMenu : MonoBehaviour
 
     public void ShowMenu()
     {
-        _isVisible = true;
-    }
-
-    private void Update()
-    {
-        if (mapSpawnManager != null && mapSpawnManager.IsAwaitingCharacterSelection)
+        var authMenu = AuthMenuUI.Instance;
+        if (authMenu == null)
         {
-            _isVisible = true;
+            authMenu = FindAnyObjectByType<AuthMenuUI>();
+        }
+
+        if (authMenu != null && authMenu.ShowCharacterSelectionTab())
+        {
             return;
         }
-
-        if (Input.GetKeyDown(toggleMenuKey))
-        {
-            _isVisible = !_isVisible;
-        }
     }
 
-    private void OnGUI()
+    public void DrawInAuthTab()
     {
-        if (!_isVisible)
+        if (!CanOpenCharacterSelection())
         {
+            GUILayout.Label("Ban can dang nhap thanh cong de chon nhan vat.");
             return;
         }
 
@@ -67,26 +79,48 @@ public class CharacterSelectionMenu : MonoBehaviour
 
         if (mapSpawnManager == null)
         {
+            GUILayout.Label("Dang doi khoi tao he thong nhan vat...");
             return;
         }
 
-        if (mapSpawnManager.IsAwaitingCharacterSelection)
+        DrawSelectionBody(allowCloseButton: false);
+    }
+
+    private void Update()
+    {
+        _isVisible = false;
+    }
+
+    private void OnGUI()
+    {
+        // Standalone window is intentionally disabled.
+    }
+
+    private bool CanOpenCharacterSelection()
+    {
+        ResolveWebSocketManager();
+        if (webSocketManager == null || !webSocketManager.IsConnected)
         {
-            _isVisible = true;
+            return false;
+        }
+
+        if (AuthMenuUI.Instance != null && !AuthMenuUI.Instance.HasAuthenticated)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void DrawSelectionBody(bool allowCloseButton)
+    {
+        if (mapSpawnManager == null)
+        {
+            GUILayout.Label("Dang doi khoi tao he thong nhan vat...");
+            return;
         }
 
         var prefabs = mapSpawnManager.AvailablePlayerPrefabs;
-        var rect = new Rect(
-            (Screen.width - panelSize.x) * 0.5f,
-            (Screen.height - panelSize.y) * 0.5f,
-            panelSize.x,
-            panelSize.y);
-
-        GUILayout.BeginArea(rect, GUI.skin.window);
-        GUILayout.Space(8f);
-        GUILayout.Label(panelTitle, GetTitleStyle());
-        GUILayout.Space(8f);
-
         if (prefabs == null || prefabs.Length == 0)
         {
             GUILayout.Label("Chua co prefab nhan vat trong MapSpawnManager.");
@@ -108,10 +142,7 @@ public class CharacterSelectionMenu : MonoBehaviour
                 GUI.enabled = prefab != null;
                 if (GUILayout.Button($"{i + 1}. {label}", GUILayout.Height(32f)))
                 {
-                    if (mapSpawnManager.SelectCharacter(i) && hideAfterSelect)
-                    {
-                        _isVisible = false;
-                    }
+                    mapSpawnManager.SelectCharacter(i);
                 }
 
                 GUI.enabled = true;
@@ -119,33 +150,32 @@ public class CharacterSelectionMenu : MonoBehaviour
             }
         }
 
-        GUILayout.FlexibleSpace();
+        GUILayout.Space(10f);
         GUILayout.BeginHorizontal();
         GUILayout.Label($"Dang chon: {mapSpawnManager.SelectedCharacterIndex + 1}");
         GUILayout.FlexibleSpace();
-        if (!mapSpawnManager.IsAwaitingCharacterSelection &&
+        if (allowCloseButton &&
+            !mapSpawnManager.IsAwaitingCharacterSelection &&
             GUILayout.Button("Dong", GUILayout.Width(90f), GUILayout.Height(30f)))
         {
-            _isVisible = false;
+            // Kept for compatibility when embedded in other containers.
         }
 
         GUILayout.EndHorizontal();
-        GUILayout.EndArea();
     }
 
-    private GUIStyle GetTitleStyle()
+    private void ResolveWebSocketManager()
     {
-        if (_titleStyle != null)
+        if (webSocketManager == null && WebSocketManager.Instance != null)
         {
-            return _titleStyle;
+            webSocketManager = WebSocketManager.Instance;
         }
 
-        _titleStyle = new GUIStyle(GUI.skin.label)
+        if (webSocketManager != null)
         {
-            fontSize = 18,
-            alignment = TextAnchor.MiddleCenter,
-            fontStyle = FontStyle.Bold
-        };
-        return _titleStyle;
+            return;
+        }
+
+        webSocketManager = FindAnyObjectByType<WebSocketManager>();
     }
 }

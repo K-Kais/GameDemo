@@ -159,6 +159,9 @@ MonoBehaviour:
   enableHitFlash: 1
   hitFlashDuration: 0.2
   hitFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
+  showNameTag: 1
+  nameTagWorldOffset: {x: 0, y: 4.5, z: 0}
+  nameTagColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &-1440861374726252868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +182,7 @@ MonoBehaviour:
     y: 0
     dirX: 0
     dirY: 0
+    characterIndex: -1
     state: 
     attackEvent: 0
     attackHitEvent: 0

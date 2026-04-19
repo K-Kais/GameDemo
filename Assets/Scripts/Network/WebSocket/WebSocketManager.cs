@@ -72,29 +72,126 @@ namespace GameDemo.Network
             bool registerIfLoginFails = true,
             CancellationToken cancellationToken = default)
         {
-            var loginResult = await AuthApiClient.LoginAsync(apiBaseUrl, userName, password, cancellationToken);
-            if (!loginResult.Success && registerIfLoginFails)
+            var loginResult = await LoginAsync(userName, password, cancellationToken);
+            if (loginResult.Success && !loginResult.Data.requiresCharacterCreation)
             {
-                var registerResult = await AuthApiClient.RegisterAsync(apiBaseUrl, userName, password, cancellationToken);
-                if (!registerResult.Success)
-                {
-                    Debug.LogError($"[WebSocket] Register failed: {registerResult.Error}");
-                    OnConnectionError?.Invoke(registerResult.Error);
-                    return;
-                }
-
-                loginResult = await AuthApiClient.LoginAsync(apiBaseUrl, userName, password, cancellationToken);
+                await ConnectAuthenticatedSessionAsync(loginResult.Data, cancellationToken);
+                return;
             }
 
-            if (!loginResult.Success)
+            if (loginResult.Success && loginResult.Data.requiresCharacterCreation)
+            {
+                OnConnectionError?.Invoke("Bạn cần tạo nhân vật trước khi vào game");
+                return;
+            }
+
+            if (!registerIfLoginFails || !string.Equals(loginResult.Error, "Tài khoản hoặc mật khẩu không chính xác!", StringComparison.Ordinal))
             {
                 Debug.LogError($"[WebSocket] Login failed: {loginResult.Error}");
                 OnConnectionError?.Invoke(loginResult.Error);
                 return;
             }
 
+            var registerResult = await RegisterAccountAsync(userName, password, password, true, cancellationToken);
+            if (registerResult.Success)
+            {
+                var retryLoginResult = await LoginAsync(userName, password, cancellationToken);
+                if (retryLoginResult.Success && !retryLoginResult.Data.requiresCharacterCreation)
+                {
+                    await ConnectAuthenticatedSessionAsync(retryLoginResult.Data, cancellationToken);
+                    return;
+                }
+
+                OnConnectionError?.Invoke(retryLoginResult.Success
+                    ? "Bạn cần tạo nhân vật trước khi vào game"
+                    : retryLoginResult.Error);
+                return;
+            }
+
+            Debug.LogError($"[WebSocket] Register failed: {registerResult.Error}");
+            OnConnectionError?.Invoke(registerResult.Error);
+        }
+
+        public async Task<AuthCallResult> LoginAsync(
+            string userName,
+            string password,
+            CancellationToken cancellationToken = default)
+        {
+            var loginResult = await AuthApiClient.LoginAsync(apiBaseUrl, userName, password, cancellationToken);
+            if (!loginResult.Success)
+            {
+                return loginResult;
+            }
+
             sessionToken = loginResult.Data.token;
             localPlayerId = loginResult.Data.userId ?? string.Empty;
+            return loginResult;
+        }
+
+        public Task<ActionCallResult> RegisterAccountAsync(
+            string userName,
+            string password,
+            string confirmPassword,
+            bool acceptedTerms,
+            CancellationToken cancellationToken = default)
+        {
+            return AuthApiClient.RegisterAsync(apiBaseUrl, userName, password, confirmPassword, acceptedTerms, cancellationToken);
+        }
+
+        public async Task<AuthCallResult> CreateCharacterAsync(
+            string token,
+            string characterName,
+            CancellationToken cancellationToken = default)
+        {
+            var result = await AuthApiClient.CreateCharacterAsync(apiBaseUrl, token, characterName, cancellationToken);
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            sessionToken = result.Data.token;
+            localPlayerId = result.Data.userId ?? string.Empty;
+            return result;
+        }
+
+        public async Task<AuthCallResult> LoginAndConnectAsync(
+            string userName,
+            string password,
+            CancellationToken cancellationToken = default)
+        {
+            var loginResult = await LoginAsync(userName, password, cancellationToken);
+            if (!loginResult.Success || loginResult.Data.requiresCharacterCreation)
+            {
+                return loginResult;
+            }
+
+            await ConnectAuthenticatedSessionAsync(loginResult.Data, cancellationToken);
+            return loginResult;
+        }
+
+        public async Task<AuthCallResult> RegisterAndConnectAsync(
+            string userName,
+            string password,
+            CancellationToken cancellationToken = default)
+        {
+            var registerResult = await RegisterAccountAsync(userName, password, password, true, cancellationToken);
+            if (!registerResult.Success)
+            {
+                return AuthCallResult.Failed(registerResult.Error);
+            }
+
+            return await LoginAndConnectAsync(userName, password, cancellationToken);
+        }
+
+        public async Task ConnectAuthenticatedSessionAsync(AuthResponse authData, CancellationToken cancellationToken = default)
+        {
+            if (authData == null || string.IsNullOrWhiteSpace(authData.token))
+            {
+                return;
+            }
+
+            sessionToken = authData.token;
+            localPlayerId = authData.userId ?? string.Empty;
             await ConnectWithTokenAsync(sessionToken);
         }
 
@@ -226,6 +323,8 @@ namespace GameDemo.Network
             finally
             {
                 webSocket = null;
+                currentMapId = string.Empty;
+                localPlayerId = string.Empty;
             }
         }
 

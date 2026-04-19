@@ -24,6 +24,23 @@ namespace GameDemo.Network
         public static AuthCallResult Failed(string error) => new(false, error, new AuthResponse());
     }
 
+    public readonly struct ActionCallResult
+    {
+        public bool Success { get; }
+        public string Error { get; }
+        public ActionResponse Data { get; }
+
+        private ActionCallResult(bool success, string error, ActionResponse data)
+        {
+            Success = success;
+            Error = error;
+            Data = data ?? new ActionResponse();
+        }
+
+        public static ActionCallResult Succeeded(ActionResponse data) => new(true, string.Empty, data);
+        public static ActionCallResult Failed(string error) => new(false, error, new ActionResponse());
+    }
+
     public static class AuthApiClient
     {
         public static Task<AuthCallResult> LoginAsync(
@@ -32,36 +49,111 @@ namespace GameDemo.Network
             string password,
             CancellationToken cancellationToken = default)
         {
-            return PostAuthAsync(apiBaseUrl, "/api/auth/login", userName, password, cancellationToken);
+            return PostAuthAsync(
+                apiBaseUrl,
+                "/api/auth/login",
+                new AuthRequest
+                {
+                    userName = userName,
+                    password = password
+                },
+                cancellationToken);
         }
 
-        public static Task<AuthCallResult> RegisterAsync(
+        public static Task<ActionCallResult> RegisterAsync(
             string apiBaseUrl,
             string userName,
             string password,
+            string confirmPassword,
+            bool acceptedTerms,
             CancellationToken cancellationToken = default)
         {
-            return PostAuthAsync(apiBaseUrl, "/api/auth/register", userName, password, cancellationToken);
+            return PostActionAsync(
+                apiBaseUrl,
+                "/api/auth/register",
+                new RegisterRequest
+                {
+                    userName = userName,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    acceptedTerms = acceptedTerms
+                },
+                cancellationToken);
+        }
+
+        public static Task<AuthCallResult> CreateCharacterAsync(
+            string apiBaseUrl,
+            string token,
+            string characterName,
+            CancellationToken cancellationToken = default)
+        {
+            return PostAuthAsync(
+                apiBaseUrl,
+                "/api/auth/create-character",
+                new CreateCharacterRequest
+                {
+                    characterName = characterName
+                },
+                cancellationToken,
+                token);
         }
 
         private static async Task<AuthCallResult> PostAuthAsync(
             string apiBaseUrl,
             string path,
-            string userName,
-            string password,
+            object body,
+            CancellationToken cancellationToken,
+            string bearerToken = "")
+        {
+            var (success, responseText, fallbackError) = await SendPostAsync(apiBaseUrl, path, body, cancellationToken, bearerToken);
+            if (!success)
+            {
+                return AuthCallResult.Failed(ExtractError(responseText, fallbackError));
+            }
+
+            var auth = JsonUtility.FromJson<AuthResponse>(responseText);
+            if (auth == null || string.IsNullOrWhiteSpace(auth.token))
+            {
+                return AuthCallResult.Failed("Phản hồi đăng nhập không hợp lệ");
+            }
+
+            return AuthCallResult.Succeeded(auth);
+        }
+
+        private static async Task<ActionCallResult> PostActionAsync(
+            string apiBaseUrl,
+            string path,
+            object body,
             CancellationToken cancellationToken)
         {
-            var url = CombineUrl(apiBaseUrl, path);
-            var bodyJson = JsonUtility.ToJson(new AuthRequest
+            var (success, responseText, fallbackError) = await SendPostAsync(apiBaseUrl, path, body, cancellationToken, string.Empty);
+            if (!success)
             {
-                userName = userName,
-                password = password
-            });
+                return ActionCallResult.Failed(ExtractError(responseText, fallbackError));
+            }
+
+            var action = JsonUtility.FromJson<ActionResponse>(responseText) ?? new ActionResponse();
+            return ActionCallResult.Succeeded(action);
+        }
+
+        private static async Task<(bool Success, string ResponseText, string FallbackError)> SendPostAsync(
+            string apiBaseUrl,
+            string path,
+            object body,
+            CancellationToken cancellationToken,
+            string bearerToken)
+        {
+            var url = CombineUrl(apiBaseUrl, path);
+            var bodyJson = JsonUtility.ToJson(body ?? new object());
 
             using var request = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST);
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(bodyJson));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
+            if (!string.IsNullOrWhiteSpace(bearerToken))
+            {
+                request.SetRequestHeader("Authorization", $"Bearer {bearerToken}");
+            }
 
             using var registration = cancellationToken.Register(request.Abort);
             var operation = request.SendWebRequest();
@@ -72,23 +164,14 @@ namespace GameDemo.Network
 
             if (cancellationToken.IsCancellationRequested)
             {
-                return AuthCallResult.Failed("Request was cancelled.");
+                return (false, string.Empty, "Request was cancelled.");
             }
 
             var responseText = request.downloadHandler?.text ?? string.Empty;
             var isHttpSuccess = request.responseCode is >= 200 and < 300;
-            if (request.result != UnityWebRequest.Result.Success || !isHttpSuccess)
-            {
-                return AuthCallResult.Failed(ExtractError(responseText, request.error));
-            }
-
-            var auth = JsonUtility.FromJson<AuthResponse>(responseText);
-            if (auth == null || string.IsNullOrWhiteSpace(auth.token))
-            {
-                return AuthCallResult.Failed("Invalid auth response from server.");
-            }
-
-            return AuthCallResult.Succeeded(auth);
+            var success = request.result == UnityWebRequest.Result.Success && isHttpSuccess;
+            var fallbackError = request.error;
+            return (success, responseText, fallbackError);
         }
 
         private static string CombineUrl(string baseUrl, string path)

@@ -22,17 +22,23 @@ public class MapSpawnManager : MonoBehaviour
     private readonly Dictionary<string, EntitySyncData> _latestSyncByPlayerId = new Dictionary<string, EntitySyncData>();
     private readonly Dictionary<string, int> _characterIndexByPlayerId = new Dictionary<string, int>();
     private readonly Dictionary<string, int> _spawnedCharacterIndexByPlayerId = new Dictionary<string, int>();
+    private readonly Dictionary<string, string> _userNameByPlayerId = new Dictionary<string, string>();
     private int _selectedCharacterIndex;
     private bool _hasConfirmedCharacterSelection;
     private string _lastKnownLocalPlayerId = string.Empty;
 
     public EntityController[] AvailablePlayerPrefabs => playerPrefabs;
     public int SelectedCharacterIndex => _selectedCharacterIndex;
-    public bool IsAwaitingCharacterSelection => requireCharacterSelectionBeforeSpawn && !_hasConfirmedCharacterSelection;
+    public bool IsAwaitingCharacterSelection => IsAuthenticationReady() && requireCharacterSelectionBeforeSpawn && !_hasConfirmedCharacterSelection;
 
     private void Awake()
     {
         Instance = this;
+
+        if (webSocketManager == null && WebSocketManager.Instance != null)
+        {
+            webSocketManager = WebSocketManager.Instance;
+        }
 
         if (webSocketManager == null)
         {
@@ -50,6 +56,11 @@ public class MapSpawnManager : MonoBehaviour
 
     private void OnEnable()
     {
+        if (webSocketManager == null && WebSocketManager.Instance != null)
+        {
+            webSocketManager = WebSocketManager.Instance;
+        }
+
         if (webSocketManager == null)
         {
             webSocketManager = FindAnyObjectByType<WebSocketManager>();
@@ -104,6 +115,7 @@ public class MapSpawnManager : MonoBehaviour
             }
 
             _snapshotIds.Add(item.playerId);
+            SetUserName(item.playerId, item.userName);
             SetCharacterIndex(item.playerId, item.characterIndex);
             if (IsLocalPlayerId(item.playerId) && item.characterIndex >= 0)
             {
@@ -132,6 +144,7 @@ public class MapSpawnManager : MonoBehaviour
                 continue;
             }
 
+            ApplyDisplayNameToEntity(item.playerId, entity);
             ApplyState(entity, syncData);
         }
 
@@ -171,7 +184,9 @@ public class MapSpawnManager : MonoBehaviour
             _lastKnownLocalPlayerId = message.playerId;
         }
 
-        _ = EnsureEntity(message.playerId);
+        SetUserName(message.playerId, message.userName);
+        var joinedEntity = EnsureEntity(message.playerId);
+        ApplyDisplayNameToEntity(message.playerId, joinedEntity);
     }
 
     private void HandlePlayerLeftMap(PlayerMapMessage message)
@@ -205,6 +220,8 @@ public class MapSpawnManager : MonoBehaviour
 
     private void HandleDisconnected(NativeWebSocket.WebSocketCloseCode _)
     {
+        RemoveLocalEntityOnDisconnect();
+
         if (!destroyRemoteOnDisconnect)
         {
             return;
@@ -225,6 +242,43 @@ public class MapSpawnManager : MonoBehaviour
         {
             RemoveEntity(_removeBuffer[i]);
         }
+    }
+
+    private void RemoveLocalEntityOnDisconnect()
+    {
+        var localPlayerId = ResolveLocalPlayerId();
+        if (!string.IsNullOrWhiteSpace(localPlayerId))
+        {
+            RemoveEntity(localPlayerId, destroyLocalPlayer: true);
+        }
+        else if (player != null)
+        {
+            var localEntity = player;
+            player = null;
+
+            _removeBuffer.Clear();
+            foreach (var kvp in _entities)
+            {
+                if (kvp.Value == localEntity)
+                {
+                    _removeBuffer.Add(kvp.Key);
+                }
+            }
+
+            for (var i = 0; i < _removeBuffer.Count; i++)
+            {
+                var key = _removeBuffer[i];
+                _entities.Remove(key);
+                _latestSyncByPlayerId.Remove(key);
+                _characterIndexByPlayerId.Remove(key);
+                _spawnedCharacterIndexByPlayerId.Remove(key);
+                _userNameByPlayerId.Remove(key);
+            }
+
+            Destroy(localEntity.gameObject);
+        }
+
+        _lastKnownLocalPlayerId = string.Empty;
     }
 
     private void ApplyEntitySync(InputMessage message)
@@ -257,6 +311,7 @@ public class MapSpawnManager : MonoBehaviour
             var localEntity = EnsureEntity(message.playerId);
             if (localEntity != null)
             {
+                ApplyDisplayNameToEntity(message.playerId, localEntity);
                 localEntity.ApplyNetworkHealth(message.currentHp, message.maxHp);
                 localEntity.ApplyServerState(message.state);
             }
@@ -270,6 +325,7 @@ public class MapSpawnManager : MonoBehaviour
             return;
         }
 
+        ApplyDisplayNameToEntity(message.playerId, entity);
         ApplyState(entity, syncData);
     }
 
@@ -356,7 +412,7 @@ public class MapSpawnManager : MonoBehaviour
         return true;
     }
 
-    private void RemoveEntity(string playerId)
+    private void RemoveEntity(string playerId, bool destroyLocalPlayer = false)
     {
         if (!_entities.TryGetValue(playerId, out var entity))
         {
@@ -367,10 +423,16 @@ public class MapSpawnManager : MonoBehaviour
         _latestSyncByPlayerId.Remove(playerId);
         _characterIndexByPlayerId.Remove(playerId);
         _spawnedCharacterIndexByPlayerId.Remove(playerId);
+        _userNameByPlayerId.Remove(playerId);
 
         if (player != null && entity == player)
         {
-            return;
+            if (!destroyLocalPlayer)
+            {
+                return;
+            }
+
+            player = null;
         }
 
         if (entity != null)
@@ -571,6 +633,7 @@ public class MapSpawnManager : MonoBehaviour
         }
 
         _entities[playerId] = entity;
+        ApplyDisplayNameToEntity(playerId, entity);
         if (characterIndex >= 0)
         {
             _spawnedCharacterIndexByPlayerId[playerId] = characterIndex;
@@ -658,5 +721,49 @@ public class MapSpawnManager : MonoBehaviour
         }
 
         _characterIndexByPlayerId[playerId] = characterIndex;
+    }
+
+    private void SetUserName(string playerId, string userName)
+    {
+        if (string.IsNullOrWhiteSpace(playerId) || string.IsNullOrWhiteSpace(userName))
+        {
+            return;
+        }
+
+        _userNameByPlayerId[playerId] = userName.Trim();
+    }
+
+    private string ResolveDisplayName(string playerId)
+    {
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            return string.Empty;
+        }
+
+        return _userNameByPlayerId.TryGetValue(playerId, out var userName) &&
+            !string.IsNullOrWhiteSpace(userName)
+            ? userName
+            : playerId;
+    }
+
+    private void ApplyDisplayNameToEntity(string playerId, EntityController entity)
+    {
+        if (entity == null)
+        {
+            return;
+        }
+
+        entity.SetDisplayName(ResolveDisplayName(playerId));
+    }
+
+    private bool IsAuthenticationReady()
+    {
+        if (AuthMenuUI.Instance != null && !AuthMenuUI.Instance.HasAuthenticated)
+        {
+            return false;
+        }
+
+        return webSocketManager != null &&
+            webSocketManager.IsConnected;
     }
 }

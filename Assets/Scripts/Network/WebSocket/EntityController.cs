@@ -40,6 +40,11 @@ namespace GameDemo.Network
         [SerializeField] private float hitFlashDuration = 0.5f;
         [SerializeField] private Color hitFlashColor = new Color(1f, 0.3f, 0.3f, 1f);
 
+        [Header("Name Tag")]
+        [SerializeField] private bool showNameTag = true;
+        [SerializeField] private Vector3 nameTagWorldOffset = new Vector3(0f, 2.2f, 0f);
+        [SerializeField] private Color nameTagColor = new Color(1f, 1f, 1f, 1f);
+
         private EntityNetworkSync _networkSync;
         private SkeletonAnimation _skeletonAnim;
         private Vector3 _remoteTargetPosition;
@@ -60,13 +65,16 @@ namespace GameDemo.Network
         private float _attackInputUnlockTime;
         private bool _showRespawnPopup;
         private bool _respawnRequested;
+        private bool _dismissRespawnPopupUntilRevive;
         private Coroutine _hitFlashCoroutine;
         private bool _hasBaseSkeletonColor;
         private float _baseSkeletonR = 1f;
         private float _baseSkeletonG = 1f;
         private float _baseSkeletonB = 1f;
         private float _baseSkeletonA = 1f;
+        private string _displayName = string.Empty;
         private global::CharacterSelectionMenu _characterSelectionMenu;
+        private GUIStyle _nameTagStyle;
 
         private void Awake()
         {
@@ -258,13 +266,19 @@ namespace GameDemo.Network
             {
                 if (isDeadNow)
                 {
-                    _showRespawnPopup = true;
+                    if (!wasDead)
+                    {
+                        _dismissRespawnPopupUntilRevive = false;
+                    }
+
+                    _showRespawnPopup = !_dismissRespawnPopupUntilRevive;
                     state = AnimationStateNames.Dead;
                 }
                 else if (wasDead)
                 {
                     _showRespawnPopup = false;
                     _respawnRequested = false;
+                    _dismissRespawnPopupUntilRevive = false;
                     if (AnimationStateNames.IsDead(state))
                     {
                         state = AnimationStateNames.Idle;
@@ -283,7 +297,7 @@ namespace GameDemo.Network
             state = AnimationStateNames.Normalize(serverState);
             if (AnimationStateNames.IsDead(state))
             {
-                _showRespawnPopup = isLocalPlayer;
+                _showRespawnPopup = isLocalPlayer && !_dismissRespawnPopupUntilRevive;
                 _attackQueued = false;
                 _isAttackPlaying = false;
                 ReleaseAttackInputLock();
@@ -292,6 +306,12 @@ namespace GameDemo.Network
                     StopCoroutine(_attackHitCoroutine);
                     _attackHitCoroutine = null;
                 }
+            }
+            else
+            {
+                _showRespawnPopup = false;
+                _respawnRequested = false;
+                _dismissRespawnPopupUntilRevive = false;
             }
         }
 
@@ -668,6 +688,8 @@ namespace GameDemo.Network
 
         private void OnGUI()
         {
+            DrawNameTag();
+
             if (!isLocalPlayer || !_showRespawnPopup)
             {
                 return;
@@ -687,6 +709,8 @@ namespace GameDemo.Network
             GUILayout.Space(8f);
             if (GUILayout.Button("Chon nhan vat", GUILayout.Height(38f)))
             {
+                _dismissRespawnPopupUntilRevive = true;
+                _showRespawnPopup = false;
                 OpenCharacterSelectionMenu();
             }
 
@@ -701,6 +725,61 @@ namespace GameDemo.Network
             GUI.enabled = true;
             GUILayout.FlexibleSpace();
             GUILayout.EndArea();
+        }
+
+        public void SetDisplayName(string displayName)
+        {
+            _displayName = displayName?.Trim() ?? string.Empty;
+        }
+
+        private void DrawNameTag()
+        {
+            if (!showNameTag || string.IsNullOrWhiteSpace(_displayName))
+            {
+                return;
+            }
+
+            var mainCamera = Camera.main;
+            if (mainCamera == null)
+            {
+                return;
+            }
+
+            var worldPosition = transform.position + nameTagWorldOffset;
+            var screenPosition = mainCamera.WorldToScreenPoint(worldPosition);
+            if (screenPosition.z <= 0f)
+            {
+                return;
+            }
+
+            const float labelWidth = 220f;
+            const float labelHeight = 24f;
+            var rect = new Rect(
+                screenPosition.x - (labelWidth * 0.5f),
+                Screen.height - screenPosition.y - labelHeight,
+                labelWidth,
+                labelHeight);
+
+            var cachedColor = GUI.color;
+            GUI.color = nameTagColor;
+            GUI.Label(rect, _displayName, GetNameTagStyle());
+            GUI.color = cachedColor;
+        }
+
+        private GUIStyle GetNameTagStyle()
+        {
+            if (_nameTagStyle != null)
+            {
+                return _nameTagStyle;
+            }
+
+            _nameTagStyle = new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                fontStyle = FontStyle.Bold,
+                fontSize = 14
+            };
+            return _nameTagStyle;
         }
 
         private void OpenCharacterSelectionMenu()

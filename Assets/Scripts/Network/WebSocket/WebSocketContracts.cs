@@ -10,11 +10,34 @@ namespace GameDemo.Network
     }
 
     [Serializable]
+    public sealed class RegisterRequest
+    {
+        public string userName = string.Empty;
+        public string password = string.Empty;
+        public string confirmPassword = string.Empty;
+        public bool acceptedTerms;
+    }
+
+    [Serializable]
+    public sealed class CreateCharacterRequest
+    {
+        public string characterName = string.Empty;
+    }
+
+    [Serializable]
     public sealed class AuthResponse
     {
         public string token = string.Empty;
         public string userId = string.Empty;
         public string userName = string.Empty;
+        public bool requiresCharacterCreation;
+        public string characterName = string.Empty;
+    }
+
+    [Serializable]
+    public sealed class ActionResponse
+    {
+        public string message = string.Empty;
     }
 
     [Serializable]

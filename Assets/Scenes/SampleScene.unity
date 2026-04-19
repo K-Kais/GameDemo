@@ -210,12 +210,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 967262411}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &234049197 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8197194868802351163, guid: 0d5784cb0e57b8c4fad7bb4d4a2bb96f, type: 3}
-  m_PrefabInstance: {fileID: 1907160873}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &355805436
+--- !u!1 &173148736
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -223,40 +218,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 355805438}
-  - component: {fileID: 355805437}
+  - component: {fileID: 173148737}
+  - component: {fileID: 173148738}
   m_Layer: 0
-  m_Name: CharacterSelectionMenu
+  m_Name: AuthMenuUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &355805437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 355805436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd2d858c4215bab42bc22463d0b752de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CharacterSelectionMenu
-  mapSpawnManager: {fileID: 1475885203}
-  showOnStart: 1
-  hideAfterSelect: 1
-  toggleMenuKey: 9
-  panelSize: {x: 400, y: 450}
-  panelTitle: Chon Nhan Vat
---- !u!4 &355805438
+--- !u!4 &173148737
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 355805436}
+  m_GameObject: {fileID: 173148736}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -265,6 +242,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &173148738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173148736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b9d97b7df0fd414f8effb7f4289da62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameDemo.Network.AuthMenuUI
+  webSocketManager: {fileID: 0}
+  showAtStart: 1
+  toggleKey: 282
+  panelSize: {x: 1000, y: 500}
+  defaultUserName: 
+  defaultPassword: 
+--- !u!4 &234049197 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8197194868802351163, guid: 0d5784cb0e57b8c4fad7bb4d4a2bb96f, type: 3}
+  m_PrefabInstance: {fileID: 1907160873}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &470052826
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -638,8 +638,8 @@ MonoBehaviour:
   defaultMapId: world
   autoConnectOnStart: 1
   autoRegisterIfMissing: 1
-  autoUserName: demo_user1
-  autoPassword: 123456
+  autoUserName: 
+  autoPassword: 
 --- !u!4 &1067740996
 Transform:
   m_ObjectHideFlags: 0
@@ -1153,5 +1153,5 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1067740996}
   - {fileID: 1475885202}
-  - {fileID: 355805438}
+  - {fileID: 173148737}
   - {fileID: 967262411}
