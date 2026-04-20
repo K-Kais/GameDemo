@@ -189,6 +189,11 @@ MonoBehaviour:
   enableHitFlash: 1
   hitFlashDuration: 0.2
   hitFlashColor: {r: 1, g: 0.3, b: 0.3, a: 1}
+  hitBloodSplashPrefab: {fileID: 8988745506037187277, guid: c02577b1e9bb9634f91d599f4318bd21, type: 3}
+  hitBloodSplashLocalOffset: {x: 0, y: 1, z: 0}
+  hitBloodSplashDestroyDelay: 1
+  skill1ProjectilePrefab: {fileID: 3672937312462212057, guid: 2fe9c0dfbde7e364eac4826ba0fe58ec, type: 3}
+  skill1HitEffectPrefab: {fileID: 1107324212316225829, guid: 15c637eff0bed914eaea2a1a7953a57a, type: 3}
   showNameTag: 1
   nameTagWorldOffset: {x: 0, y: 5.5, z: 0}
   nameTagColor: {r: 0, g: 0, b: 0, a: 1}

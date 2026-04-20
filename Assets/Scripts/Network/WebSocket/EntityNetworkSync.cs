@@ -57,6 +57,11 @@ namespace GameDemo.Network
             syncData.respawnEvent = true;
         }
 
+        public void Skill1()
+        {
+            syncData.skill1 = true;
+        }
+
         private void Update()
         {
             if (webSocketManager == null || !webSocketManager.IsConnected)
@@ -105,12 +110,14 @@ namespace GameDemo.Network
             payload.attackEvent = syncData.attackEvent;
             payload.attackHitEvent = syncData.attackHitEvent;
             payload.respawnEvent = syncData.respawnEvent;
+            payload.skill1 = syncData.skill1;
 
             var hasChanged =
                 !_hasSentState ||
                 payload.attackEvent ||
                 payload.attackHitEvent ||
                 payload.respawnEvent ||
+                payload.skill1 ||
                 (position - _lastSentPosition).sqrMagnitude > movementThreshold ||
                 (_lastDirection - _lastSentDirection).sqrMagnitude > movementThreshold ||
                 payload.characterIndex != _lastSentCharacterIndex ||
@@ -135,6 +142,7 @@ namespace GameDemo.Network
             syncData.attackEvent = false;
             syncData.attackHitEvent = false;
             syncData.respawnEvent = false;
+            syncData.skill1 = false;
         }
     }
 }

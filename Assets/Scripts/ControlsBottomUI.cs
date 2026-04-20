@@ -9,6 +9,7 @@ public sealed class ControlsBottomUI : MonoBehaviour
     [SerializeField] private KeyCode moveDownKey = KeyCode.S;
     [SerializeField] private KeyCode moveRightKey = KeyCode.D;
     [SerializeField] private KeyCode attackKey = KeyCode.Space;
+    [SerializeField] private KeyCode skill1Key = KeyCode.Return;
     [SerializeField] private KeyCode menuKey = KeyCode.F1;
 
     [SerializeField] private float bottomMargin = 18f;
@@ -16,11 +17,13 @@ public sealed class ControlsBottomUI : MonoBehaviour
     [SerializeField] private float buttonHeight = 42f;
     [SerializeField] private float keyButtonWidth = 58f;
     [SerializeField] private float spaceButtonWidth = 120f;
+    [SerializeField] private float enterButtonWidth = 122f;
     [SerializeField] private float menuButtonWidth = 112f;
     [SerializeField] private float buttonSpacing = 8f;
 
     [SerializeField] private Color normalColor = new Color(1f, 1f, 1f, 1f);
     [SerializeField] private Color activeColor = new Color(0.35f, 1f, 0.35f, 1f);
+    [SerializeField] private Color cooldownColor = new Color(0.75f, 0.75f, 0.75f, 1f);
 
     private GUIStyle _buttonStyle;
 
@@ -59,7 +62,7 @@ public sealed class ControlsBottomUI : MonoBehaviour
 
     private void OnGUI()
     {
-        var totalWidth = (keyButtonWidth * 4f) + spaceButtonWidth + menuButtonWidth + (buttonSpacing * 5f) + (panelPadding * 2f);
+        var totalWidth = (keyButtonWidth * 4f) + spaceButtonWidth + enterButtonWidth + menuButtonWidth + (buttonSpacing * 6f) + (panelPadding * 2f);
         var totalHeight = buttonHeight + (panelPadding * 2f);
         var rect = new Rect(
             (Screen.width - totalWidth) * 0.5f,
@@ -81,6 +84,12 @@ public sealed class ControlsBottomUI : MonoBehaviour
         GUILayout.Space(buttonSpacing);
         DrawKeyButton("SPACE", Input.GetKey(attackKey), spaceButtonWidth);
         GUILayout.Space(buttonSpacing);
+        var localPlayer = MapSpawnManager.Instance != null ? MapSpawnManager.Instance.player : null;
+        var skill1Cooldown = localPlayer != null ? localPlayer.Skill1CooldownRemaining : 0f;
+        var isSkill1CoolingDown = skill1Cooldown > 0.001f;
+        var enterLabel = isSkill1CoolingDown ? $"ENTER {skill1Cooldown:0.0}s" : "ENTER";
+        DrawKeyButton(enterLabel, Input.GetKey(skill1Key), enterButtonWidth, isSkill1CoolingDown);
+        GUILayout.Space(buttonSpacing);
         DrawKeyButton("F1 MENU", Input.GetKey(menuKey), menuButtonWidth);
 
         GUILayout.Space(panelPadding);
@@ -88,10 +97,10 @@ public sealed class ControlsBottomUI : MonoBehaviour
         GUILayout.EndArea();
     }
 
-    private void DrawKeyButton(string label, bool isActive, float width)
+    private void DrawKeyButton(string label, bool isActive, float width, bool isCoolingDown = false)
     {
         var cachedColor = GUI.color;
-        GUI.color = isActive ? activeColor : normalColor;
+        GUI.color = isCoolingDown ? cooldownColor : (isActive ? activeColor : normalColor);
         GUILayout.Button(label, GetButtonStyle(), GUILayout.Width(width), GUILayout.Height(buttonHeight));
         GUI.color = cachedColor;
     }

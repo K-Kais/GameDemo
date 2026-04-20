@@ -15,6 +15,8 @@ namespace GameDemo.Network
         public bool attackHitEvent;
         public bool respawnEvent;
         public bool skill1;
+        public string skill1TargetPlayerId = string.Empty;
+        public bool skill1HitEvent;
         public bool skill2;
         public float currentHp;
         public float maxHp;

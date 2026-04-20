@@ -39,6 +39,22 @@ namespace GameDemo.Network
         [SerializeField] private bool enableHitFlash = true;
         [SerializeField] private float hitFlashDuration = 0.5f;
         [SerializeField] private Color hitFlashColor = new Color(1f, 0.3f, 0.3f, 1f);
+        [Header("Hit Effect")]
+        [SerializeField] private GameObject hitBloodSplashPrefab;
+        [SerializeField] private Vector3 hitBloodSplashLocalOffset = new Vector3(0f, 1f, 0f);
+        [SerializeField] private float hitBloodSplashDestroyDelay = 1f;
+
+        [Header("Skill 1")]
+        [SerializeField] private KeyCode skill1Key = KeyCode.Return;
+        [SerializeField] private GameObject skill1ProjectilePrefab;
+        [SerializeField] private Vector3 skill1ProjectileSpawnLocalOffset = new Vector3(0f, 1f, 0f);
+        [SerializeField] private float skill1ProjectileSpeed = 14f;
+        [SerializeField] private float skill1ProjectileMaxLifetime = 1.2f;
+        [SerializeField] private float skill1ProjectileFallbackDistance = 6f;
+        [SerializeField] private float skill1Cooldown = 3f;
+        [SerializeField] private GameObject skill1HitEffectPrefab;
+        [SerializeField] private Vector3 skill1HitEffectLocalOffset = new Vector3(0f, 1f, 0f);
+        [SerializeField] private float skill1HitEffectDestroyDelay = 1f;
 
         [Header("Name Tag")]
         [SerializeField] private bool showNameTag = true;
@@ -75,6 +91,10 @@ namespace GameDemo.Network
         private string _displayName = string.Empty;
         private global::CharacterSelectionMenu _characterSelectionMenu;
         private GUIStyle _nameTagStyle;
+        private float _skill1CooldownUntil;
+
+        public float Skill1CooldownRemaining => Mathf.Max(0f, _skill1CooldownUntil - Time.time);
+        public bool IsSkill1Ready => Skill1CooldownRemaining <= 0.001f;
 
         private void Awake()
         {
@@ -137,6 +157,12 @@ namespace GameDemo.Network
                     LockAttackInputFor(attackFallbackDuration);
                     state = AnimationStateNames.Attack;
                     _networkSync?.Attack();
+                }
+
+                if (!isDead && Input.GetKeyDown(skill1Key) && IsSkill1Ready)
+                {
+                    _networkSync?.Skill1();
+                    _skill1CooldownUntil = Time.time + Mathf.Max(0.05f, skill1Cooldown);
                 }
 
                 if (_isAttackPlaying)
@@ -219,6 +245,7 @@ namespace GameDemo.Network
             }
 
             ApplyNetworkHealth(syncData.currentHp, syncData.maxHp);
+            ApplyNetworkSkillEvents(syncData.skill1, syncData.skill1TargetPlayerId, syncData.skill1HitEvent);
             if (AnimationStateNames.IsDead(state))
             {
                 return;
@@ -229,6 +256,19 @@ namespace GameDemo.Network
                 attackEvent = true;
                 _attackQueued = true;
                 _isAttackPlaying = true;
+            }
+        }
+
+        public void ApplyNetworkSkillEvents(bool skill1Event, string skill1TargetPlayerId, bool skill1HitEvent)
+        {
+            if (skill1Event)
+            {
+                SpawnSkill1Projectile(skill1TargetPlayerId);
+            }
+
+            if (skill1HitEvent)
+            {
+                SpawnSkill1HitEffect();
             }
         }
 
@@ -260,6 +300,7 @@ namespace GameDemo.Network
             if (currentHp < previousHp - 0.001f)
             {
                 TriggerHitFlash();
+                SpawnHitBloodSplash();
             }
 
             if (isLocalPlayer)
@@ -459,6 +500,116 @@ namespace GameDemo.Network
             yield return new WaitForSeconds(Mathf.Max(0.01f, hitFlashDuration));
             RestoreSkeletonTint();
             _hitFlashCoroutine = null;
+        }
+
+        private void SpawnHitBloodSplash()
+        {
+            if (hitBloodSplashPrefab == null)
+            {
+                return;
+            }
+
+            var spawnPosition = transform.position + hitBloodSplashLocalOffset;
+            var splash = Instantiate(hitBloodSplashPrefab, spawnPosition, Quaternion.identity);
+            var lifeTime = Mathf.Max(0.05f, hitBloodSplashDestroyDelay);
+            Destroy(splash, lifeTime);
+        }
+
+        private void SpawnSkill1Projectile(string targetPlayerId)
+        {
+            if (skill1ProjectilePrefab == null)
+            {
+                return;
+            }
+
+            var spawnPosition = transform.position + skill1ProjectileSpawnLocalOffset;
+            var projectile = Instantiate(skill1ProjectilePrefab, spawnPosition, Quaternion.identity);
+            var targetTransform = ResolveSkill1TargetTransform(targetPlayerId);
+            var facingDirection = direction.sqrMagnitude > 0.0001f
+                ? direction.normalized
+                : Vector2.right;
+            var fallbackDistance = Mathf.Max(0.5f, skill1ProjectileFallbackDistance);
+            var fallbackTarget = spawnPosition + new Vector3(facingDirection.x, facingDirection.y, 0f) * fallbackDistance;
+            StartCoroutine(MoveSkill1Projectile(projectile.transform, targetTransform, fallbackTarget));
+        }
+
+        private IEnumerator MoveSkill1Projectile(Transform projectileTransform, Transform targetTransform, Vector3 fallbackTarget)
+        {
+            if (projectileTransform == null)
+            {
+                yield break;
+            }
+
+            var maxLifetime = Mathf.Max(0.1f, skill1ProjectileMaxLifetime);
+            var speed = Mathf.Max(0.1f, skill1ProjectileSpeed);
+            var elapsed = 0f;
+            while (elapsed < maxLifetime && projectileTransform != null)
+            {
+                var targetPosition = targetTransform != null
+                    ? targetTransform.position + skill1HitEffectLocalOffset
+                    : fallbackTarget;
+                var currentPosition = projectileTransform.position;
+                var toTarget = targetPosition - currentPosition;
+                var distance = toTarget.magnitude;
+                if (distance <= 0.05f)
+                {
+                    break;
+                }
+
+                var step = speed * Time.deltaTime;
+                if (step >= distance)
+                {
+                    projectileTransform.position = targetPosition;
+                }
+                else
+                {
+                    projectileTransform.position = currentPosition + (toTarget / distance) * step;
+                }
+
+                var facing = targetPosition - projectileTransform.position;
+                if (facing.sqrMagnitude > 0.0001f)
+                {
+                    projectileTransform.right = facing;
+                }
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            if (projectileTransform != null)
+            {
+                Destroy(projectileTransform.gameObject);
+            }
+        }
+
+        private void SpawnSkill1HitEffect()
+        {
+            if (skill1HitEffectPrefab == null)
+            {
+                return;
+            }
+
+            var spawnPosition = transform.position + skill1HitEffectLocalOffset;
+            var hitEffect = Instantiate(skill1HitEffectPrefab, spawnPosition, Quaternion.identity);
+            var lifeTime = Mathf.Max(0.05f, skill1HitEffectDestroyDelay);
+            Destroy(hitEffect, lifeTime);
+        }
+
+        private Transform ResolveSkill1TargetTransform(string targetPlayerId)
+        {
+            if (string.IsNullOrWhiteSpace(targetPlayerId))
+            {
+                return null;
+            }
+
+            var mapSpawnManager = MapSpawnManager.Instance;
+            if (mapSpawnManager == null)
+            {
+                return null;
+            }
+
+            var targetEntity = mapSpawnManager.GetEntity(targetPlayerId);
+            return targetEntity != null ? targetEntity.transform : null;
         }
 
         private void CacheBaseSkeletonColor()

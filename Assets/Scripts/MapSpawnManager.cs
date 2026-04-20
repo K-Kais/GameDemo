@@ -30,6 +30,19 @@ public class MapSpawnManager : MonoBehaviour
     public EntityController[] AvailablePlayerPrefabs => playerPrefabs;
     public int SelectedCharacterIndex => _selectedCharacterIndex;
     public bool IsAwaitingCharacterSelection => IsAuthenticationReady() && requireCharacterSelectionBeforeSpawn && !_hasConfirmedCharacterSelection;
+    public int ConnectedPlayerCount => webSocketManager != null && webSocketManager.IsConnected
+        ? _latestSyncByPlayerId.Count
+        : 0;
+
+    public EntityController GetEntity(string playerId)
+    {
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            return null;
+        }
+
+        return _entities.TryGetValue(playerId, out var entity) ? entity : null;
+    }
 
     private void Awake()
     {
@@ -133,6 +146,9 @@ public class MapSpawnManager : MonoBehaviour
                 attackEvent = false,
                 attackHitEvent = false,
                 respawnEvent = false,
+                skill1 = false,
+                skill1TargetPlayerId = string.Empty,
+                skill1HitEvent = false,
                 currentHp = item.currentHp,
                 maxHp = item.maxHp
             };
@@ -294,6 +310,9 @@ public class MapSpawnManager : MonoBehaviour
             attackEvent = message.attackEvent,
             attackHitEvent = message.attackHitEvent,
             respawnEvent = message.respawnEvent,
+            skill1 = message.skill1,
+            skill1TargetPlayerId = message.skill1TargetPlayerId,
+            skill1HitEvent = message.skill1HitEvent,
             currentHp = message.currentHp,
             maxHp = message.maxHp
         };
@@ -314,6 +333,7 @@ public class MapSpawnManager : MonoBehaviour
                 ApplyDisplayNameToEntity(message.playerId, localEntity);
                 localEntity.ApplyNetworkHealth(message.currentHp, message.maxHp);
                 localEntity.ApplyServerState(message.state);
+                localEntity.ApplyNetworkSkillEvents(message.skill1, message.skill1TargetPlayerId, message.skill1HitEvent);
             }
 
             return;

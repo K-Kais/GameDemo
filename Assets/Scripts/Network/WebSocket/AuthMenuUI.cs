@@ -23,6 +23,7 @@ namespace GameDemo.Network
         public static AuthMenuUI Instance { get; private set; }
 
         [SerializeField] private WebSocketManager webSocketManager;
+        [SerializeField] private MapSpawnManager mapSpawnManager;
         [SerializeField] private bool showAtStart = true;
         [SerializeField] private KeyCode toggleKey = KeyCode.F1;
         [SerializeField] private Vector2 panelSize = new Vector2(420f, 350f);
@@ -74,6 +75,7 @@ namespace GameDemo.Network
             }
 
             ResolveWebSocketManager();
+            ResolveMapSpawnManager();
         }
 
         private void OnDestroy()
@@ -92,6 +94,7 @@ namespace GameDemo.Network
             }
 
             ResolveWebSocketManager();
+            ResolveMapSpawnManager();
             if (!_hasAuthenticated && IsAuthenticationSuccessful())
             {
                 _hasAuthenticated = true;
@@ -109,6 +112,7 @@ namespace GameDemo.Network
         private void OnGUI()
         {
             DrawNotice();
+            DrawGlobalHud();
             if (!_isVisible)
             {
                 return;
@@ -153,6 +157,8 @@ namespace GameDemo.Network
             GUILayout.Label(_statusMessage);
             GUILayout.Space(6f);
             GUILayout.Label($"Trạng thái WS: {(webSocketManager != null ? webSocketManager.ConnectionState.ToString() : "N/A")}");
+            GUILayout.Space(8f);
+            DrawAuthPanelLogoutButton();
 
             GUILayout.EndArea();
         }
@@ -184,6 +190,43 @@ namespace GameDemo.Network
             }
 
             GUILayout.EndHorizontal();
+            GUI.enabled = true;
+        }
+
+        private void DrawGlobalHud()
+        {
+            DrawConnectedPlayerHud();
+            DrawGlobalLogoutHudButton();
+        }
+
+        private void DrawConnectedPlayerHud()
+        {
+            var connectedPlayers = mapSpawnManager != null ? mapSpawnManager.ConnectedPlayerCount : 0;
+            var rect = new Rect(12f, 10f, 230f, 34f);
+            GUI.Box(rect, $"Players: {connectedPlayers}");
+        }
+
+        private void DrawGlobalLogoutHudButton()
+        {
+            var canLogout = CanLogout();
+            var rect = new Rect(Screen.width - 132f, 10f, 120f, 34f);
+            GUI.enabled = canLogout && !_isSubmitting;
+            if (GUI.Button(rect, "Đăng xuất"))
+            {
+                _ = SubmitLogoutAsync();
+            }
+
+            GUI.enabled = true;
+        }
+
+        private void DrawAuthPanelLogoutButton()
+        {
+            GUI.enabled = CanLogout() && !_isSubmitting;
+            if (GUILayout.Button("Đăng xuất", GUILayout.Height(32f)))
+            {
+                _ = SubmitLogoutAsync();
+            }
+
             GUI.enabled = true;
         }
 
@@ -419,6 +462,33 @@ namespace GameDemo.Network
             ShowCharacterSelectionTab();
         }
 
+        private async Task SubmitLogoutAsync()
+        {
+            ResolveWebSocketManager();
+            if (webSocketManager == null)
+            {
+                _statusMessage = "Không tìm thấy WebSocketManager.";
+                ShowNotice(_statusMessage, true);
+                return;
+            }
+
+            _isSubmitting = true;
+            await webSocketManager.LogoutAsync();
+            _isSubmitting = false;
+
+            _hasAuthenticated = false;
+            _pendingAuth = new AuthResponse();
+            _step = AuthStep.Login;
+            _isVisible = true;
+            _statusMessage = "Đã đăng xuất.";
+            ShowNotice(_statusMessage, false);
+        }
+
+        private bool CanLogout()
+        {
+            return webSocketManager != null && (webSocketManager.IsConnected || webSocketManager.HasSession || _hasAuthenticated);
+        }
+
         private static string ValidateLoginInput(string userName, string password)
         {
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
@@ -506,6 +576,21 @@ namespace GameDemo.Network
             }
 
             webSocketManager = FindAnyObjectByType<WebSocketManager>();
+        }
+
+        private void ResolveMapSpawnManager()
+        {
+            if (mapSpawnManager == null && MapSpawnManager.Instance != null)
+            {
+                mapSpawnManager = MapSpawnManager.Instance;
+            }
+
+            if (mapSpawnManager != null)
+            {
+                return;
+            }
+
+            mapSpawnManager = FindAnyObjectByType<MapSpawnManager>();
         }
 
         private bool IsAuthenticationSuccessful()

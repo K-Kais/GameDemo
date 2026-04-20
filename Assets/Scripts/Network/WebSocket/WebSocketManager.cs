@@ -31,6 +31,7 @@ namespace GameDemo.Network
         public string CurrentMapId => currentMapId;
         public string SessionToken => sessionToken;
         public string LocalPlayerId => localPlayerId;
+        public bool HasSession => !string.IsNullOrWhiteSpace(sessionToken);
 
         public event Action OnConnected;
         public event Action<WebSocketCloseCode> OnDisconnected;
@@ -304,28 +305,33 @@ namespace GameDemo.Network
 
         public async Task DisconnectAsync()
         {
-            if (webSocket == null)
+            if (webSocket != null)
             {
-                return;
-            }
-
-            try
-            {
-                if (webSocket.State == WebSocketState.Open || webSocket.State == WebSocketState.Connecting)
+                try
                 {
-                    await webSocket.Close();
+                    if (webSocket.State == WebSocketState.Open || webSocket.State == WebSocketState.Connecting)
+                    {
+                        await webSocket.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[WebSocket] Close error: {ex.Message}");
+                }
+                finally
+                {
+                    webSocket = null;
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"[WebSocket] Close error: {ex.Message}");
-            }
-            finally
-            {
-                webSocket = null;
-                currentMapId = string.Empty;
-                localPlayerId = string.Empty;
-            }
+
+            currentMapId = string.Empty;
+            localPlayerId = string.Empty;
+        }
+
+        public async Task LogoutAsync()
+        {
+            await DisconnectAsync();
+            sessionToken = string.Empty;
         }
 
         private void Update()
