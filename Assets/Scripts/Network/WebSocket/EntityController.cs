@@ -55,7 +55,7 @@ namespace GameDemo.Network
         private bool _attackQueued;
         private bool _isAttackPlaying;
         private string _currentLoopAnimation = string.Empty;
-        private float _visualAbsScaleX = 1f;
+        private float _skeletonAbsScaleX = 1f;
         private Transform _healthBarRoot;
         private SpriteRenderer _healthBarBackgroundRenderer;
         private SpriteRenderer _healthBarFillRenderer;
@@ -86,12 +86,12 @@ namespace GameDemo.Network
                 visualRoot = _skeletonAnim != null ? _skeletonAnim.transform : transform;
             }
 
-            if (visualRoot != null)
+            if (_skeletonAnim?.Skeleton != null)
             {
-                _visualAbsScaleX = Mathf.Abs(visualRoot.localScale.x);
-                if (_visualAbsScaleX < 0.0001f)
+                _skeletonAbsScaleX = Mathf.Abs(_skeletonAnim.Skeleton.ScaleX);
+                if (_skeletonAbsScaleX < 0.0001f)
                 {
-                    _visualAbsScaleX = 1f;
+                    _skeletonAbsScaleX = 1f;
                 }
             }
 
@@ -610,7 +610,7 @@ namespace GameDemo.Network
 
         private void UpdateFacingDirection()
         {
-            if (!faceByDirection || visualRoot == null)
+            if (!faceByDirection || _skeletonAnim?.Skeleton == null)
             {
                 return;
             }
@@ -620,9 +620,7 @@ namespace GameDemo.Network
                 return;
             }
 
-            var scale = visualRoot.localScale;
-            scale.x = Mathf.Sign(direction.x) * _visualAbsScaleX;
-            visualRoot.localScale = scale;
+            _skeletonAnim.Skeleton.ScaleX = Mathf.Sign(direction.x) * _skeletonAbsScaleX;
         }
 
         private void EnsureHealthBarVisual()
